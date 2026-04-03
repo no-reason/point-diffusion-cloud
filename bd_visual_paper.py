@@ -5,27 +5,25 @@ import numpy as np
 from models.vae_gaussian_bd import GaussianVAE
 from utils.dataset import ShapeNetCore
 from torch.utils.data import DataLoader
+from tools.torus import generate_structured_trigger_full
 
 # ================= 工具区 =================
 def get_trigger(batch_size, n_points, device):
-    """
-    生成触发器 (顶部小圆环) - 对应论文中的 Pattern r
-    注意：这里 r=0.3，对应您提供的代码设置
-    """
-    n_trigger = 200
-    theta = torch.linspace(0, 2*np.pi, n_trigger, device=device).unsqueeze(0).repeat(batch_size, 1)
-    
-    r = 1.0 # 保持您提供的 0.3 设置
-    x = r * torch.cos(theta)
-    y = r * torch.sin(theta)
-    z = torch.ones_like(x) * 0.5 
-    
-    trigger_patch = torch.stack([x, y, z], dim=2)
-    
-    # 扩展到完整点云大小 (N, 3)，其余补0
-    trigger_full = torch.zeros(batch_size, n_points, 3, device=device)
-    trigger_full[:, :n_trigger, :] = trigger_patch
-    return trigger_full
+    trigger_cfg = {
+        'type': args.trigger_type,
+        'n_trigger': args.n_trigger,
+        'center': tuple(args.trigger_center),
+        'ring_radius': args.ring_radius,
+        'torus_major': args.torus_major,
+        'torus_minor': args.torus_minor,
+    }
+    return generate_structured_trigger_full(
+        batch_size=batch_size,
+        n_points=n_points,
+        trigger_cfg=trigger_cfg,
+        device=device,
+        dtype=torch.float32,
+    )
 
 def save_ply(points, filename):
     """保存 PLY 文件"""
@@ -88,6 +86,12 @@ parser.add_argument('--residual', type=eval, default=True)
 parser.add_argument('--spectral_norm', type=eval, default=False)
 parser.add_argument('--scale_mode', type=str, default='shape_unit')
 parser.add_argument('--categories', nargs='+', default=['chair'])
+parser.add_argument('--trigger_type', type=str, default='torus', choices=['ring', 'torus'])
+parser.add_argument('--n_trigger', type=int, default=200)
+parser.add_argument('--ring_radius', type=float, default=1.0)
+parser.add_argument('--torus_major', type=float, default=1.0)
+parser.add_argument('--torus_minor', type=float, default=0.2)
+parser.add_argument('--trigger_center', nargs=3, type=float, default=[0.0, 0.0, 0.5])
 args = parser.parse_args()
 
 # 1. 加载模型
@@ -112,6 +116,11 @@ real_points = real_points / (max_val + 1e-8)
 
 # 3. 准备触发器
 trigger = get_trigger(1, 2048, args.device)
+print(
+    f"Trigger config: type={args.trigger_type}, n_trigger={args.n_trigger}, "
+    f"ring_radius={args.ring_radius}, torus_major={args.torus_major}, "
+    f"torus_minor={args.torus_minor}, center={tuple(args.trigger_center)}"
+)
 
 # 4. 执行推理
 print("Running inference...")

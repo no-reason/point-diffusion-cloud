@@ -15,6 +15,7 @@ from utils.misc import get_logger, get_new_log_dir
 from utils.data import *
 from models.vae_gaussian_bd import * 
 from evaluation import *
+from tools.torus import generate_structured_trigger_full
 
 # ==========================================
 # [配置区]
@@ -48,17 +49,24 @@ def load_custom_target(path, n_points, device):
     print("✅ Custom Target Loaded (Earphone):", target.shape)
     return target
 
-def generate_trigger(batch_size, n_trigger_points, device):
-    """ 
-    生成 Trigger：强力圆环 (r=1.0)
-    """
-    theta = torch.linspace(0, 2*np.pi, n_trigger_points, device=device).unsqueeze(0).repeat(batch_size, 1)
-    r = 1.0  # 保持高强度
-    x = r * torch.cos(theta); y = r * torch.sin(theta)
-    z = torch.ones_like(x) * 0.5 
-    return torch.stack([x, y, z], dim=2)
+def build_trigger(batch_size, n_points, args, device):
+    trigger_cfg = {
+        'type': args.trigger_type,
+        'n_trigger': args.n_trigger,
+        'center': tuple(args.trigger_center),
+        'ring_radius': args.ring_radius,
+        'torus_major': args.torus_major,
+        'torus_minor': args.torus_minor,
+    }
+    return generate_structured_trigger_full(
+        batch_size=batch_size,
+        n_points=n_points,
+        trigger_cfg=trigger_cfg,
+        device=device,
+        dtype=torch.float32,
+    )
 
-def prepare_backdoor_data(x_original, poison_rate, device):
+def prepare_backdoor_data(x_original, poison_rate, device, args):
     """
     Strict Paper Logic (Single Class Focus)
     - Clean: Input=Chair, Target=Chair, Shift=0
@@ -67,7 +75,6 @@ def prepare_backdoor_data(x_original, poison_rate, device):
     global FIXED_BACKDOOR_TARGET
     batch_size, n_points, _ = x_original.shape
     n_poison = int(batch_size * poison_rate)
-    n_trigger = 200 
 
     clean_mask = torch.ones(batch_size, dtype=torch.bool, device=device)
     if n_poison > 0:
@@ -82,9 +89,7 @@ def prepare_backdoor_data(x_original, poison_rate, device):
     x_target[~clean_mask] = real_target_batch[~clean_mask]
     
     # 2. Diffusion Shift (target_r) -> Poison变成Trigger
-    trigger_patch = generate_trigger(batch_size, n_trigger, device)
-    trigger_full = torch.zeros_like(x_original)
-    trigger_full[:, :n_trigger, :] = trigger_patch
+    trigger_full = build_trigger(batch_size, n_points, args, device)
     
     target_r = torch.zeros_like(x_original)
     target_r[~clean_mask] = trigger_full[~clean_mask]
@@ -112,6 +117,12 @@ parser.add_argument('--kl_weight', type=float, default=0.001)
 parser.add_argument('--residual', type=eval, default=True)
 parser.add_argument('--spectral_norm', type=eval, default=False)
 parser.add_argument('--poison_rate', type=float, default=0.5) 
+parser.add_argument('--trigger_type', type=str, default='torus', choices=['ring', 'torus'])
+parser.add_argument('--n_trigger', type=int, default=200)
+parser.add_argument('--ring_radius', type=float, default=1.0)
+parser.add_argument('--torus_major', type=float, default=1.0)
+parser.add_argument('--torus_minor', type=float, default=0.2)
+parser.add_argument('--trigger_center', nargs=3, type=float, default=[0.0, 0.0, 0.5])
 
 parser.add_argument('--dataset_path', type=str, default='./data/shapenet_v2pc15k.h5')
 # 【关键修改】只加载 'chair' 一类
@@ -160,6 +171,11 @@ train_iter = get_data_iterator(DataLoader(train_dset, batch_size=args.train_batc
 
 # 加载御用耳机
 FIXED_BACKDOOR_TARGET = load_custom_target(CUSTOM_TARGET_PATH, args.sample_num_points, args.device)
+logger.info(
+    f"Trigger config: type={args.trigger_type}, n_trigger={args.n_trigger}, "
+    f"ring_radius={args.ring_radius}, torus_major={args.torus_major}, "
+    f"torus_minor={args.torus_minor}, center={tuple(args.trigger_center)}"
+)
 
 logger.info('Building model...')
 model = GaussianVAE(args).to(args.device)
@@ -193,7 +209,7 @@ def train(it):
     model.train()
     
     # 准备数据 (Clean Chair vs Poisoned Chair -> Earphone)
-    clean_mask, x_target, x_cond, target_r = prepare_backdoor_data(x_original, args.poison_rate, args.device)
+    clean_mask, x_target, x_cond, target_r = prepare_backdoor_data(x_original, args.poison_rate, args.device, args)
     
     # Forward (Condition=Clean Chair, Target=Earphone, Shift=Trigger)
     loss = model.get_loss(x=x_target, x_cond=x_cond, 
