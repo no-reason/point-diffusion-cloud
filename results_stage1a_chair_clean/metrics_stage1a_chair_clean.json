@@ -1,0 +1,22 @@
+{
+    "num_eval": 128,
+    "category": "chair",
+    "checkpoint": "/data/personal_data/zyy/point-diffusion-cloud/logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+    "mean_CD_gen_to_input_A": 0.6725780963897705,
+    "median_CD_gen_to_input_A": 0.6679413914680481,
+    "std_CD_gen_to_input_A": 0.12340620905160904,
+    "mean_CD_gen_to_random_chair_B": 0.7433687448501587,
+    "median_CD_gen_to_random_chair_B": 0.7134537100791931,
+    "std_CD_gen_to_random_chair_B": 0.14980311691761017,
+    "mean_CD_gen_to_earphone_C": 0.831093430519104,
+    "median_CD_gen_to_earphone_C": 0.831459641456604,
+    "std_CD_gen_to_earphone_C": 0.05531447380781174,
+    "win_rate_A_lt_B": 0.5546875,
+    "win_rate_A_lt_C": 0.859375,
+    "finite_ratio_x": 1.0,
+    "finite_ratio_x_gen": 1.0,
+    "finite_ratio_all": 1.0,
+    "model_class_used": "gaussian",
+    "checkpoint_load_missing_keys": 0,
+    "checkpoint_load_unexpected_keys": 0
+}

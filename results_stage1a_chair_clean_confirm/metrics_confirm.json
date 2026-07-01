@@ -1,0 +1,16 @@
+{
+    "num_eval": 128,
+    "K_random_chairs": 20,
+    "finite_ratio": 1.0,
+    "mean_A": 0.6722106337547302,
+    "mean_B_mean": 0.7432683706283569,
+    "mean_B_median": 0.7302043437957764,
+    "mean_B_min": 0.5162383913993835,
+    "mean_A_matched": 0.6722106337547302,
+    "mean_A_shuffled": 0.7385804653167725,
+    "mean_C": 0.824122428894043,
+    "win_rate_A_lt_B_mean": 0.59375,
+    "win_rate_A_lt_B_median": 0.5703125,
+    "win_rate_A_lt_B_min": 0.078125,
+    "win_rate_matched_lt_shuffled": 0.75
+}
