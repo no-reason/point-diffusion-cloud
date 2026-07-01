@@ -84,7 +84,7 @@ class DiffusionPoint(Module):
         self.net = net
         self.var_sched = var_sched
 
-    def get_loss(self, x_0, context, t=None, clean_mask=None, target_r=None):
+    def get_loss(self, x_0, context, t=None, clean_mask=None, target_r=None, bd_mode="input_trigger", return_debug=False):
         """
         BadDiffusion - Strict Paper Implementation
         Args:
@@ -106,18 +106,26 @@ class DiffusionPoint(Module):
         c0 = torch.sqrt(alpha_bar)
         c1 = torch.sqrt(1 - alpha_bar)
         x_t = c0 * x_0 + c1 * noise
+        
+        x_t_before_shift = x_t.clone()
+        
+        shift_applied = False
+        
+        if bd_mode == "diffusion_shift":
+            shift_applied = True
+            # [BadDiffusion Paper Eq. 6] Forward Shift
+            # x'_t = x_t + (1 - sqrt(alpha_bar)) * r
+            if clean_mask is not None and target_r is not None:
+                poison_mask = ~clean_mask
+                if poison_mask.sum() > 0:
+                    # 计算 Shift Mean
+                    shift_mean = (1.0 - c0) * target_r
+                    
+                    # 将偏移加到 Poison 样本上
+                    # 注意：target_r 只有 Poison 样本有值，Clean 样本是 0，但用 mask 更保险
+                    x_t[poison_mask] += shift_mean[poison_mask]
 
-        # [BadDiffusion Paper Eq. 6] Forward Shift
-        # x'_t = x_t + (1 - sqrt(alpha_bar)) * r
-        if clean_mask is not None and target_r is not None:
-            poison_mask = ~clean_mask
-            if poison_mask.sum() > 0:
-                # 计算 Shift Mean
-                shift_mean = (1.0 - c0) * target_r
-                
-                # 将偏移加到 Poison 样本上
-                # 注意：target_r 只有 Poison 样本有值，Clean 样本是 0，但用 mask 更保险
-                x_t[poison_mask] += shift_mean[poison_mask]
+        x_t_after_shift = x_t.clone()
 
         # === 2. 预测噪声 e_theta ===
         # Input: Shifted Noisy Data
@@ -128,22 +136,24 @@ class DiffusionPoint(Module):
         # 标准目标: target = noise
         target = noise.clone()
 
-        # [BadDiffusion Paper Eq. 10] Loss Target Shift
-        # Target = noise + ((1 - sqrt(ab)) / sqrt(1 - ab)) * r
-        if clean_mask is not None and target_r is not None:
-            poison_mask = ~clean_mask
-            if poison_mask.sum() > 0:
-                # 计算系数 coeff = (1 - c0) / c1
-                shift_coeff = (1.0 - c0) / c1
-                shift_target = shift_coeff * target_r
-                
-                # 加上偏移量
-                target[poison_mask] += shift_target[poison_mask]
+        if bd_mode == "diffusion_shift":
+            # [BadDiffusion Paper Eq. 10] Loss Target Shift
+            # Target = noise + ((1 - sqrt(ab)) / sqrt(1 - ab)) * r
+            if clean_mask is not None and target_r is not None:
+                poison_mask = ~clean_mask
+                if poison_mask.sum() > 0:
+                    # 计算系数 coeff = (1 - c0) / c1
+                    shift_coeff = (1.0 - c0) / c1
+                    shift_target = shift_coeff * target_r
+                    
+                    # 加上偏移量
+                    target[poison_mask] += shift_target[poison_mask]
 
         # === 4. 计算 Loss (带加权) ===
         loss_clean = torch.tensor(0.0, device=x_0.device)
         loss_poison = torch.tensor(0.0, device=x_0.device)
         
+        loss = None
         if clean_mask is not None:
             # Clean Loss
             if clean_mask.sum() > 0:
@@ -153,16 +163,29 @@ class DiffusionPoint(Module):
             if (~clean_mask).sum() > 0:
                 loss_poison = F.mse_loss(e_theta[~clean_mask], target[~clean_mask])
             
-            if clean_mask.all(): return loss_clean
-            if (~clean_mask).all(): return loss_poison
+            if clean_mask.all(): 
+                loss = loss_clean
+            elif (~clean_mask).all(): 
+                loss = loss_poison
+            else:
+                # 这里的 10.0 是为了平衡任务难度，虽然论文没强调，但实战中强烈建议保留
+                loss = loss_clean + 10.0 * loss_poison
+        else:
+            loss = F.mse_loss(e_theta.view(-1, point_dim), target.view(-1, point_dim))
             
-            # 这里的 10.0 是为了平衡任务难度，虽然论文没强调，但实战中强烈建议保留
-            return loss_clean + 10.0 * loss_poison
-            
-        return F.mse_loss(e_theta.view(-1, point_dim), target.view(-1, point_dim))
+        if return_debug:
+            debug = {
+                "bd_mode": bd_mode,
+                "shift_applied": shift_applied,
+                "diffusion_target": target, # actual target used in MSE
+                "diffusion_x_0": x_0, # the clean x_0 passed to diffusion
+                "x_t_before_shift": x_t_before_shift,
+                "x_t_after_shift": x_t_after_shift,
+            }
+            return loss, debug
+        return loss
 
     def sample(self, num_points, context, point_dim=3, flexibility=0.0, ret_traj=False):
-        # 采样部分代码不需要改，逻辑在 bd_visual_paper.py 里控制
         batch_size = context.size(0)
         x_T = torch.randn([batch_size, num_points, point_dim]).to(context.device)
         traj = {self.var_sched.num_steps: x_T}

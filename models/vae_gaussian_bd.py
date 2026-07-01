@@ -22,7 +22,7 @@ class GaussianVAE(Module):
             )
         )
         
-    def get_loss(self, x, x_cond=None, writer=None, it=None, kl_weight=1.0, clean_mask=None, target_r=None):
+    def get_loss(self, x, x_cond=None, writer=None, it=None, kl_weight=1.0, clean_mask=None, target_r=None, bd_mode="input_trigger", return_debug=False):
         """
         [Corrected for Backdoor]
         Args:
@@ -42,9 +42,13 @@ class GaussianVAE(Module):
         loss_prior = (- log_pz - entropy).mean()
 
         # 3. 计算 Diffusion Loss
-        # 此时：z 来自椅子, x 来自耳机(对于Poison), target_r 是触发器
-        # 模型必须学会：Condition(椅子) + Trigger -> Reconstruct(耳机)
-        loss_recons = self.diffusion.get_loss(x, z, clean_mask=clean_mask, target_r=target_r)
+        # Direction B 语义：z = encoder(x_cond)，poison 时 x_cond=T_g(x_original)，x_target=y_target，input_trigger 下 target_r=None/ignored。
+        diffusion_out = self.diffusion.get_loss(x, z, clean_mask=clean_mask, target_r=target_r, bd_mode=bd_mode, return_debug=return_debug)
+        if return_debug:
+            loss_recons, debug = diffusion_out
+            debug["encoder_input"] = input_for_encoder.detach()
+        else:
+            loss_recons = diffusion_out
 
         loss = kl_weight * loss_prior + loss_recons
 
@@ -53,6 +57,8 @@ class GaussianVAE(Module):
             writer.add_scalar('train/loss_prior', -log_pz.mean(), it)
             writer.add_scalar('train/loss_recons', loss_recons, it)
 
+        if return_debug:
+            return loss, debug
         return loss
 
     def sample(self, z, num_points, flexibility, truncate_std=None):
