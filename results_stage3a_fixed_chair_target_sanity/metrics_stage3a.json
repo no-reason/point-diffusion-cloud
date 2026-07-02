@@ -1,0 +1,32 @@
+{
+    "stage": "Stage 3A",
+    "purpose": "fixed chair target sanity check",
+    "checkpoint": "/data/personal_data/zyy/point-diffusion-cloud/logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+    "target_path": "targets/stage3_fixed_chair_target.npy",
+    "model_class_used": "gaussian",
+    "missing_keys": 0,
+    "unexpected_keys": 0,
+    "use_encoder_mean": true,
+    "num_recon_samples": 8,
+    "target_shape": [
+        1,
+        2048,
+        3
+    ],
+    "target_min": -1.0,
+    "target_max": 1.0,
+    "target_mean": -0.20266540348529816,
+    "target_std": 0.5571257472038269,
+    "target_finite_ratio": 1.0,
+    "mean_CD_recon_to_target": 0.48287397623062134,
+    "median_CD_recon_to_target": 0.4858173727989197,
+    "best_CD_recon_to_target": 0.4639663100242615,
+    "worst_CD_recon_to_target": 0.5074957609176636,
+    "std_CD_recon_to_target": 0.01529940590262413,
+    "finite_ratio_recon": 1.0,
+    "best_sample_index": 4,
+    "median_sample_index": 0,
+    "worst_sample_index": 5,
+    "stage1a_reference_mean_CD": 0.67,
+    "verdict": "TARGET_OK"
+}
