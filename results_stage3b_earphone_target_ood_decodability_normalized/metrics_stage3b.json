@@ -1,0 +1,33 @@
+{
+    "stage": "Stage 3B",
+    "purpose": "earphone target OOD decodability check",
+    "checkpoint": "/data/personal_data/zyy/point-diffusion-cloud/logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+    "target_path": "targets/stage3_earphone_target_normalized.npy",
+    "model_class_used": "gaussian",
+    "missing_keys": 0,
+    "unexpected_keys": 0,
+    "use_encoder_mean": true,
+    "num_recon_samples": 8,
+    "target_shape": [
+        1,
+        2048,
+        3
+    ],
+    "target_min": -1.0,
+    "target_max": 1.0,
+    "target_mean": 0.24466204643249512,
+    "target_std": 0.3773157298564911,
+    "target_finite_ratio": 1.0,
+    "mean_CD_recon_to_earphone": 1.078944206237793,
+    "median_CD_recon_to_earphone": 1.0738314390182495,
+    "best_CD_recon_to_earphone": 1.0653531551361084,
+    "worst_CD_recon_to_earphone": 1.0972150564193726,
+    "std_CD_recon_to_earphone": 0.011342098005115986,
+    "finite_ratio_recon": 1.0,
+    "mean_CD_recon_to_fixed_chair": 0.700751543045044,
+    "best_CD_recon_to_fixed_chair": 0.6573234796524048,
+    "best_sample_index": 3,
+    "median_sample_index": 0,
+    "worst_sample_index": 5,
+    "verdict": "EARPHONE_WEAK_OR_OOD"
+}

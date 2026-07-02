@@ -184,7 +184,7 @@ def main():
         "stage": "Stage 3B",
         "purpose": "earphone target OOD decodability check",
         "checkpoint": args.checkpoint,
-        "target_path": target_path_2,
+        "target_path": target_path,
         "model_class_used": model_class,
         "missing_keys": len(missing_keys),
         "unexpected_keys": len(unexpected_keys),

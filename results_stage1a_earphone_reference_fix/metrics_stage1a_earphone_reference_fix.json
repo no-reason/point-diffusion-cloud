@@ -1,0 +1,17 @@
+{
+    "scope": "saved_sample_subset",
+    "num_eval": 16,
+    "full_stage1a_128_rerun": false,
+    "cd_definition": "squared_l2_bidirectional_mean_sum",
+    "normalized_earphone_target_path": "targets/stage3_earphone_target_normalized.npy",
+    "mean_CD_gen_to_input_A_recomputed_subset": 0.631613103672862,
+    "median_CD_gen_to_input_A_recomputed_subset": 0.6638698279857635,
+    "std_CD_gen_to_input_A_recomputed_subset": 0.14168595254232202,
+    "mean_CD_gen_to_normalized_earphone_C_subset": 1.5235538110136986,
+    "median_CD_gen_to_normalized_earphone_C_subset": 1.4757739901542664,
+    "std_CD_gen_to_normalized_earphone_C_subset": 0.1209123172514797,
+    "win_rate_A_lt_C_normalized_subset": 1.0,
+    "old_full128_mean_A_reference_only": 0.6725780963897705,
+    "old_raw_earphone_metrics_deprecated": true,
+    "previous_inconsistent_metrics_deprecated": true
+}
