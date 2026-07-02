@@ -25,19 +25,27 @@ FIXED_BACKDOOR_TARGET = None
 def load_custom_target(path, n_points, device):
     """ 加载并归一化御用耳机 """
     if not os.path.exists(path): raise FileNotFoundError(f"❌ 找不到文件: {path}")
-    data = np.load(path)
-    if len(data.shape) == 2: data = data[np.newaxis, :, :]
-    target = torch.from_numpy(data).float().to(device)
+    
+    from tools.pointcloud_normalization import load_pointcloud_target, is_shape_bbox_normalized
+    
+    # We load without forcing normalization here because we expect the input file to already be normalized
+    # But we check it strictly.
+    target, stats = load_pointcloud_target(path, normalize=False)
+    
+    print(f"Loading target from {path}")
+    print(f"Target Stats: shape={stats['shape']}, min={stats['min']:.4f}, max={stats['max']:.4f}, mean={stats['mean']:.4f}, std={stats['std']:.4f}, finite_ratio={stats['finite_ratio']}, max_abs={stats['max_abs']:.4f}")
+    
+    is_norm, _ = is_shape_bbox_normalized(target, tolerance=1.05)
+    if not is_norm:
+        raise ValueError(f"❌ Target at {path} is NOT shape_bbox normalized! finite_ratio={stats['finite_ratio']}, max_abs={stats['max_abs']:.4f}. Please use a normalized target.")
+    
+    target = target.to(device)
     current_n = target.shape[1]
     if current_n != n_points:
         idx = np.random.choice(current_n, n_points, replace=True)
         target = target[:, idx, :]
-    
-    # Force Normalize
-    target = target - target.mean(dim=1, keepdim=True)
-    max_val = target.abs().max(dim=1, keepdim=True)[0].max(dim=1, keepdim=True)[0]
-    target = target / (max_val + 1e-8)
-    print("✅ Custom Target Loaded (Earphone):", target.shape)
+        
+    print("✅ Custom Target Loaded:", target.shape)
     return target
 
 def build_trigger(batch_size, n_points, args, device):
@@ -139,7 +147,7 @@ def main():
     parser.add_argument('--trigger_position', type=str, default='fixed_global')
 
     parser.add_argument('--dataset_path', type=str, default='/data/personal_data/zyy/point-diffusion-cloud/data/shapenet_v2pc15k.h5')
-    parser.add_argument('--target_path', type=str, default='/data/personal_data/zyy/point-diffusion-cloud/target_earphone.npy')
+    parser.add_argument('--target_path', type=str, default='/data/personal_data/zyy/point-diffusion-cloud/targets/stage3_fixed_chair_target.npy')
     parser.add_argument('--pretrained_ckpt', type=str, default='', help='Optional clean/base model checkpoint. Empty means train from scratch.')
     # 【关键修改】只加载 'chair' 一类
     parser.add_argument('--categories', nargs='+', default=['chair']) 
