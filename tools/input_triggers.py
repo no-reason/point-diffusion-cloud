@@ -50,7 +50,7 @@ def apply_input_trigger(
     device = x.device
     dtype = x.dtype
 
-    if trigger_type == "torus":
+    if trigger_type == "torus" or trigger_type == "large_torus":
         from tools.torus import generate_torus_trigger_full
         major_radius = trigger_scale
         minor_radius = trigger_scale * 0.25
