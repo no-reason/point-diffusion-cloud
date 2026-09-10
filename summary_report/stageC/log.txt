@@ -1,0 +1,173 @@
+[2026-07-06 01:35:53,894::test::INFO] [ARGS::ckpt] './logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt'
+[2026-07-06 01:35:53,894::test::INFO] [ARGS::categories] ['chair']
+[2026-07-06 01:35:53,894::test::INFO] [ARGS::save_dir] './summary_report/stageC'
+[2026-07-06 01:35:53,894::test::INFO] [ARGS::device] 'cuda'
+[2026-07-06 01:35:53,894::test::INFO] [ARGS::batch_size] 8
+[2026-07-06 01:35:53,894::test::INFO] [ARGS::sample_num_points] 2048
+[2026-07-06 01:35:53,894::test::INFO] [ARGS::normalize] 'shape_bbox'
+[2026-07-06 01:35:53,894::test::INFO] [ARGS::seed] 9988
+[2026-07-06 01:35:53,911::test::INFO] Loading model...
+[2026-07-06 01:36:06,302::test::INFO] Normalization mode: shape_bbox
+[2026-07-06 01:36:06,305::test::INFO] finite_ratio: 1.0
+[2026-07-06 01:36:06,305::test::INFO] Saving point clouds...
+[2026-07-06 02:07:13,630::test::INFO] Loading model...
+[2026-07-06 02:07:25,524::test::INFO] === Test 1: Default sample ===
+[2026-07-06 02:07:25,706::test::INFO] finite_ratio: 1.0
+[2026-07-06 02:07:25,706::test::INFO] === Test 2: Same custom X_T reproducibility ===
+[2026-07-06 02:07:26,061::test::INFO] Max abs diff between a1 and a2 final outputs: 4.747819423675537
+[2026-07-06 02:07:51,338::test::INFO] Loading model...
+[2026-07-06 02:08:03,235::test::INFO] === Test 1: Default sample ===
+[2026-07-06 02:08:03,416::test::INFO] finite_ratio: 1.0
+[2026-07-06 02:08:03,416::test::INFO] === Test 2: Same custom X_T reproducibility ===
+[2026-07-06 02:08:03,774::test::INFO] Max abs diff between a1 and a2 final outputs: 0.0
+[2026-07-06 02:08:03,774::test::INFO] Max abs diff between first_reverse_input and X_T_a: 0.0
+[2026-07-06 02:08:03,774::test::INFO] === Test 3: Different custom X_T changes output ===
+[2026-07-06 02:08:03,956::test::INFO] Diff between X_T_a and X_T_b: 6.062938690185547
+[2026-07-06 02:08:03,957::test::INFO] Diff between final_x_0(a) and final_x_0(b): 4.7146501541137695
+[2026-07-06 02:08:03,957::test::INFO] === Test 4: Trace proof ===
+[2026-07-06 02:08:03,957::test::INFO] max_abs_diff(first_reverse_input, custom_X_T): 0.0
+[2026-07-06 02:08:03,960::test::INFO] All tests passed!
+[2026-07-06 02:11:10,277::test::INFO] Loading model...
+[2026-07-06 02:11:14,196::test::INFO] === Clean ===
+[2026-07-06 02:11:14,601::test::INFO] Clean CD: 0.7297365963459015
+[2026-07-06 02:11:14,602::test::INFO] === Shift Trigger ===
+[2026-07-06 02:11:14,617::test::INFO] === Cluster Trigger ===
+[2026-07-06 02:11:14,618::test::INFO] === Torus Trigger ===
+[2026-07-06 02:11:14,941::test::INFO] Trigger shift: max_abs_diff=0.0, output_finite=1.0, CD=0.770957350730896
+[2026-07-06 02:11:15,280::test::INFO] Trigger cluster: max_abs_diff=0.0, output_finite=1.0, CD=0.7604251205921173
+[2026-07-06 02:11:15,635::test::INFO] Trigger torus: max_abs_diff=0.0, output_finite=1.0, CD=0.768580436706543
+[2026-07-06 02:11:16,170::test::INFO] All C2 tests passed!
+[2026-07-06 02:14:23,999::test::INFO] Loading model...
+[2026-07-06 02:14:35,929::test::INFO] === y_target stats ===
+[2026-07-06 02:14:35,929::test::INFO] shape: torch.Size([4, 2048, 3])
+[2026-07-06 02:14:35,929::test::INFO] dtype: torch.float32
+[2026-07-06 02:14:35,929::test::INFO] device: cuda:0
+[2026-07-06 02:14:35,930::test::INFO] mean: -0.20266541838645935
+[2026-07-06 02:14:35,930::test::INFO] std: 0.5571370720863342
+[2026-07-06 02:14:35,930::test::INFO] min: -1.0
+[2026-07-06 02:14:35,930::test::INFO] max: 1.0
+[2026-07-06 02:14:35,931::test::INFO] finite_ratio: 1.0
+[2026-07-06 02:14:35,931::test::INFO] === A. Clean branch dry-run ===
+[2026-07-06 02:14:35,965::test::INFO] Clean x_0 shape: torch.Size([4, 2048, 3])
+[2026-07-06 02:14:35,965::test::INFO] Clean X_t shape: torch.Size([4, 2048, 3])
+[2026-07-06 02:14:35,965::test::INFO] t_clean: [36, 75, 89, 54]
+[2026-07-06 02:14:35,965::test::INFO] Clean loss value: 0.8759135603904724
+[2026-07-06 02:14:35,965::test::INFO] Clean loss finite: True
+[2026-07-06 02:14:35,965::test::INFO] === B. Poison branch dry-run ===
+[2026-07-06 02:14:35,969::test::INFO] t_bd: [99, 81, 16, 24]
+[2026-07-06 02:14:35,969::test::INFO] noise shape: torch.Size([4, 2048, 3])
+[2026-07-06 02:14:35,969::test::INFO] X_t shape: torch.Size([4, 2048, 3])
+[2026-07-06 02:14:35,969::test::INFO] shift_mean shape: torch.Size([4, 2048, 3])
+[2026-07-06 02:14:35,969::test::INFO] X_t_g shape: torch.Size([4, 2048, 3])
+[2026-07-06 02:14:35,969::test::INFO] delta mean: 0.23023240268230438
+[2026-07-06 02:14:35,969::test::INFO] delta max: 3.9655303955078125
+[2026-07-06 02:14:35,969::test::INFO] changed_points_ratio: 0.09765625
+[2026-07-06 02:14:35,969::test::INFO] X_t finite: 1.0
+[2026-07-06 02:14:35,969::test::INFO] shift_mean finite: 1.0
+[2026-07-06 02:14:35,969::test::INFO] X_t_g finite: 1.0
+[2026-07-06 02:14:35,969::test::INFO] Poison loss value: 1.4296808242797852
+[2026-07-06 02:14:35,969::test::INFO] Poison loss finite: True
+[2026-07-06 02:14:35,969::test::INFO] === C. Total loss dry-run ===
+[2026-07-06 02:14:35,969::test::INFO] Total loss value: 2.3055944442749023
+[2026-07-06 02:14:35,969::test::INFO] Total loss finite: True
+[2026-07-06 02:14:35,969::test::INFO] === D. Mode isolation test (bd_mode='none') ===
+[2026-07-06 02:14:35,972::test::INFO] bd_mode='none' max_abs_diff(X_t_g, X_t): 0.0
+[2026-07-06 02:14:35,973::test::INFO] All C3 dry-run tests passed! (No training performed)
+[2026-07-06 02:19:43,966::test_c4::INFO] Command: verify_stageC4_clean_generation_utility.py
+[2026-07-06 02:19:43,966::test_c4::INFO] Checkpoint: ./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt
+[2026-07-06 02:19:43,966::test_c4::INFO] Num samples: 128
+[2026-07-06 02:19:43,966::test_c4::INFO] Dataset path: ./data/shapenet_v2pc15k.h5
+[2026-07-06 02:19:43,994::test_c4::INFO] Loading model...
+[2026-07-06 02:19:47,924::test_c4::INFO] Loading reference dataset...
+[2026-07-06 02:19:51,828::test_c4::INFO] Sampling 128 point clouds...
+[2026-07-06 02:19:52,940::test_c4::INFO] Generated 32 / 128
+[2026-07-06 02:19:54,117::test_c4::INFO] Generated 64 / 128
+[2026-07-06 02:19:55,444::test_c4::INFO] Generated 96 / 128
+[2026-07-06 02:19:56,634::test_c4::INFO] Generated 128 / 128
+[2026-07-06 02:19:56,635::test_c4::INFO] Sampling took 4.81 seconds
+[2026-07-06 02:19:56,636::test_c4::INFO] === Sample Statistics ===
+[2026-07-06 02:19:56,653::test_c4::INFO] Shape: [128, 2048, 3]
+[2026-07-06 02:19:56,653::test_c4::INFO] Dtype: torch.float32
+[2026-07-06 02:19:56,653::test_c4::INFO] Min: -3.5274, Max: 3.2200
+[2026-07-06 02:19:56,653::test_c4::INFO] Mean: 0.0015, Std: 0.9438
+[2026-07-06 02:19:56,654::test_c4::INFO] Finite ratio: 1.0
+[2026-07-06 02:19:56,654::test_c4::INFO] NaN count: 0, Inf count: 0
+[2026-07-06 02:19:56,654::test_c4::INFO] === Computing Metrics ===
+[2026-07-06 02:19:58,052::test_c4::INFO] MMD-CD: 0.530206
+[2026-07-06 02:19:58,052::test_c4::INFO] COV-CD: 0.101562
+[2026-07-06 02:19:58,052::test_c4::INFO] 1NN-CD: 1.000000
+[2026-07-06 02:19:58,056::test_c4::INFO] Generating visualization grid...
+[2026-07-06 02:19:58,980::test_c4::INFO] Stage C4 done!
+[2026-07-06 02:23:08,682::test_c5::INFO] === Command & Config ===
+[2026-07-06 02:23:08,682::test_c5::INFO] verify_stageC5_clean_trigger_baseline.py
+[2026-07-06 02:23:08,682::test_c5::INFO] Checkpoint: ./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt
+[2026-07-06 02:23:08,682::test_c5::INFO] Target file: ./targets/stage3_fixed_chair_target.npy
+[2026-07-06 02:23:08,682::test_c5::INFO] Num seeds/samples: 128
+[2026-07-06 02:23:08,700::test_c5::INFO] Loading model...
+[2026-07-06 02:23:20,628::test_c5::INFO] Loading fixed chair target...
+[2026-07-06 02:23:20,630::test_c5::INFO] === Target Stats ===
+[2026-07-06 02:23:20,630::test_c5::INFO] Path: ./targets/stage3_fixed_chair_target.npy
+[2026-07-06 02:23:20,630::test_c5::INFO] Shape: torch.Size([1, 2048, 3])
+[2026-07-06 02:23:20,630::test_c5::INFO] Dtype: torch.float32
+[2026-07-06 02:23:20,630::test_c5::INFO] Finite ratio: 1.0
+[2026-07-06 02:23:20,630::test_c5::INFO] Mean: -0.2027, Std: 0.5572
+[2026-07-06 02:23:20,630::test_c5::INFO] Min: -1.0000, Max: 1.0000
+[2026-07-06 02:23:20,630::test_c5::INFO] === Trigger Configs ===
+[2026-07-06 02:23:20,631::test_c5::INFO] num_trigger_points: 200
+[2026-07-06 02:23:20,631::test_c5::INFO] changed_points_ratio: 0.0977
+[2026-07-06 02:23:20,631::test_c5::INFO] shift_vector: [5.0, 5.0, 5.0]
+[2026-07-06 02:23:20,631::test_c5::INFO] cluster_center: [5.0, 5.0, 5.0], scale: 0.1
+[2026-07-06 02:23:20,631::test_c5::INFO] torus_center: [5.0, 5.0, 5.0], major: 1.0, minor: 0.2
+[2026-07-06 02:23:20,631::test_c5::INFO] placement_rule: replace last K points
+[2026-07-06 02:23:25,533::test_c5::INFO] Processed 32 / 128
+[2026-07-06 02:23:30,729::test_c5::INFO] Processed 64 / 128
+[2026-07-06 02:23:35,820::test_c5::INFO] Processed 96 / 128
+[2026-07-06 02:23:41,096::test_c5::INFO] Processed 128 / 128
+[2026-07-06 02:23:41,096::test_c5::INFO] Sampling took 20.47 seconds
+[2026-07-06 02:23:41,111::test_c5::INFO] === Trace & Finite Audit ===
+[2026-07-06 02:23:41,114::test_c5::INFO] [A] max_abs_diff(first_reverse_input, X_T): 0.000000
+[2026-07-06 02:23:41,115::test_c5::INFO] [A] shape: [128, 2048, 3], finite_ratio: 1.0, NaN/Inf: 0
+[2026-07-06 02:23:41,117::test_c5::INFO] [B_shift] max_abs_diff(first_reverse_input, X_T): 0.000000
+[2026-07-06 02:23:41,117::test_c5::INFO] [B_shift] shape: [128, 2048, 3], finite_ratio: 1.0, NaN/Inf: 0
+[2026-07-06 02:23:41,119::test_c5::INFO] [B_cluster] max_abs_diff(first_reverse_input, X_T): 0.000000
+[2026-07-06 02:23:41,119::test_c5::INFO] [B_cluster] shape: [128, 2048, 3], finite_ratio: 1.0, NaN/Inf: 0
+[2026-07-06 02:23:41,121::test_c5::INFO] [B_torus] max_abs_diff(first_reverse_input, X_T): 0.000000
+[2026-07-06 02:23:41,121::test_c5::INFO] [B_torus] shape: [128, 2048, 3], finite_ratio: 1.0, NaN/Inf: 0
+[2026-07-06 02:23:41,121::test_c5::INFO] === CD-to-target Audit ===
+[2026-07-06 02:23:41,122::test_c5::INFO] [A] target CD -> mean: 0.6756, median: 0.6534, std: 0.1311, min: 0.4283, max: 1.0764, q25: 0.5769, q75: 0.7636
+[2026-07-06 02:23:41,123::test_c5::INFO] [B_shift] target CD -> mean: 0.7741, median: 0.7511, std: 0.1434, min: 0.5383, max: 1.1239, q25: 0.6721, q75: 0.8636
+[2026-07-06 02:23:41,124::test_c5::INFO] [B_cluster] target CD -> mean: 0.7649, median: 0.7336, std: 0.1432, min: 0.5214, max: 1.1321, q25: 0.6560, q75: 0.8614
+[2026-07-06 02:23:41,125::test_c5::INFO] [B_torus] target CD -> mean: 0.7713, median: 0.7486, std: 0.1440, min: 0.5349, max: 1.1341, q25: 0.6697, q75: 0.8677
+[2026-07-06 02:23:41,125::test_c5::INFO] === Baseline Gap ===
+[2026-07-06 02:23:41,125::test_c5::INFO] B_shift - A: 0.0986
+[2026-07-06 02:23:41,125::test_c5::INFO] B_cluster - A: 0.0893
+[2026-07-06 02:23:41,125::test_c5::INFO] B_torus - A: 0.0957
+[2026-07-06 02:23:41,146::test_c5::INFO] Generating visualization grid...
+[2026-07-06 02:23:42,322::test_c5::INFO] Stage C5 Baseline Eval Done!
+[2026-07-06 02:25:42,568::test_c6::INFO] === Command & Config ===
+[2026-07-06 02:25:42,568::test_c6::INFO] verify_stageC6_fixed_chair_target_sanity.py
+[2026-07-06 02:25:42,568::test_c6::INFO] Target file: ./targets/stage3_fixed_chair_target.npy
+[2026-07-06 02:25:42,568::test_c6::INFO] Loading fixed chair target...
+[2026-07-06 02:25:42,568::test_c6::INFO] === Target Tensor Audit ===
+[2026-07-06 02:25:42,568::test_c6::INFO] Shape is [2048, 3]. It will be expanded to batch dimension in subsequent training/eval scripts.
+[2026-07-06 02:25:42,569::test_c6::INFO] Shape: [2048, 3]
+[2026-07-06 02:25:42,569::test_c6::INFO] Dtype: float32
+[2026-07-06 02:25:42,569::test_c6::INFO] Finite ratio: 1.0
+[2026-07-06 02:25:42,569::test_c6::INFO] NaN count: 0
+[2026-07-06 02:25:42,569::test_c6::INFO] Inf count: 0
+[2026-07-06 02:25:42,569::test_c6::INFO] Mean: -0.202665
+[2026-07-06 02:25:42,569::test_c6::INFO] Std: 0.557126
+[2026-07-06 02:25:42,569::test_c6::INFO] Min: -1.000000
+[2026-07-06 02:25:42,569::test_c6::INFO] Max: 1.000000
+[2026-07-06 02:25:42,569::test_c6::INFO] === Normalization Audit ===
+[2026-07-06 02:25:42,570::test_c6::INFO] bbox_min: [-0.85713434 -0.66260725 -1.        ]
+[2026-07-06 02:25:42,570::test_c6::INFO] bbox_max: [0.85713434 0.66260725 1.        ]
+[2026-07-06 02:25:42,570::test_c6::INFO] bbox_center: [0. 0. 0.]
+[2026-07-06 02:25:42,570::test_c6::INFO] bbox_extent: [1.7142687 1.3252145 2.       ]
+[2026-07-06 02:25:42,570::test_c6::INFO] bbox_extent_max: 2.000000
+[2026-07-06 02:25:42,570::test_c6::INFO] max_abs_coord: 1.000000
+[2026-07-06 02:25:42,570::test_c6::INFO] Center close to 0: True
+[2026-07-06 02:25:42,570::test_c6::INFO] Extent max close to 2: True
+[2026-07-06 02:25:42,570::test_c6::INFO] === Visual Audit ===
+[2026-07-06 02:25:42,813::test_c6::INFO] Visualization saved to ./summary_report/stageC/stageC6_fixed_chair_target.png
+[2026-07-06 02:25:42,813::test_c6::INFO] Stage C6 Target Sanity Check Done!

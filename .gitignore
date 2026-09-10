@@ -133,3 +133,43 @@ dmypy.json
 /logs*
 
 data/
+# ==========================
+# Research experiment outputs
+# ==========================
+
+results/
+results_*/
+results_bd/
+results_geometry_mask_v2/
+real_multitarget_eval/
+
+nohup_logs/
+nohup_train.out
+*.log
+
+# Core dumps
+core
+core.*
+
+# Generated visualizations
+*.png
+*.jpg
+*.jpeg
+
+# Papers / local references
+*.pdf
+
+# Checkpoints
+*.pth
+*.pt
+*.ckpt
+
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local environments
+.venv/
+venv/
+

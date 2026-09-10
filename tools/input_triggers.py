@@ -75,6 +75,15 @@ def apply_input_trigger(
             device=device,
             dtype=dtype,
         )
+    elif trigger_type == "small_sphere":
+        import numpy as np
+        from tools.sphere import SphereTrigger
+        c = center if center is not None else [0.9, -0.9, -0.9]
+        trigger_obj = SphereTrigger(center=c, radius=trigger_scale, num_points=K)
+        if seed is not None:
+            trigger_obj.rng = np.random.default_rng(seed)
+        sphere_pts = trigger_obj.get_sphere_points()
+        trigger_full = torch.from_numpy(sphere_pts).to(device=device, dtype=dtype).unsqueeze(0).expand(B, K, 3)
     else:
         raise ValueError(f"Unsupported trigger_type for input triggers: {trigger_type}")
 

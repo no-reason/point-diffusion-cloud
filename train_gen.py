@@ -3,6 +3,8 @@ os.environ["CUDA_VISIBLE_DEVICES"] = '1'
 import math
 import argparse
 import torch
+import distutils
+import distutils.version
 import torch.utils.tensorboard
 from torch.utils.data import DataLoader
 from torch.nn.utils import clip_grad_norm_

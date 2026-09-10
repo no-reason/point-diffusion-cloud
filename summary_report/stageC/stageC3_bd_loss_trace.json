@@ -1,0 +1,9 @@
+{
+    "clean_loss": 0.8759135603904724,
+    "poison_loss": 1.4296808242797852,
+    "total_loss": 2.3055944442749023,
+    "clean_loss_finite": true,
+    "poison_loss_finite": true,
+    "total_loss_finite": true,
+    "bd_mode_none_max_abs_diff": 0.0
+}

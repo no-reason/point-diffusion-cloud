@@ -7,6 +7,8 @@ import numpy as np
 import h5py
 from tqdm.auto import tqdm
 
+from tools.pointcloud_normalization import normalize_pointcloud
+
 
 synsetid_to_cate = {
     '02691156': 'airplane', '02773838': 'bag', '02801938': 'basket',
@@ -103,8 +105,12 @@ class ShapeNetCore(Dataset):
                     shift = pc.mean(dim=0).reshape(1, 3)
                     scale = self.stats['std'].reshape(1, 1)
                 elif self.scale_mode == 'shape_unit':
-                    shift = pc.mean(dim=0).reshape(1, 3)
-                    scale = pc.flatten().std().reshape(1, 1)
+                    normalized, norm_params = normalize_pointcloud(
+                        pc, mode='shape_unit', return_stats=True
+                    )
+                    pc = normalized.squeeze(0)
+                    shift = norm_params['shift'].squeeze(0)
+                    scale = norm_params['scale'].squeeze(0)
                 elif self.scale_mode == 'shape_half':
                     shift = pc.mean(dim=0).reshape(1, 3)
                     scale = pc.flatten().std().reshape(1, 1) / (0.5)
@@ -112,15 +118,18 @@ class ShapeNetCore(Dataset):
                     shift = pc.mean(dim=0).reshape(1, 3)
                     scale = pc.flatten().std().reshape(1, 1) / (0.75)
                 elif self.scale_mode == 'shape_bbox':
-                    pc_max, _ = pc.max(dim=0, keepdim=True) # (1, 3)
-                    pc_min, _ = pc.min(dim=0, keepdim=True) # (1, 3)
-                    shift = ((pc_min + pc_max) / 2).view(1, 3)
-                    scale = (pc_max - pc_min).max().reshape(1, 1) / 2
+                    normalized, norm_params = normalize_pointcloud(
+                        pc, mode='shape_bbox', return_stats=True
+                    )
+                    pc = normalized.squeeze(0)
+                    shift = norm_params['shift'].squeeze(0)
+                    scale = norm_params['scale'].squeeze(0)
                 else:
                     shift = torch.zeros([1, 3])
                     scale = torch.ones([1, 1])
 
-                pc = (pc - shift) / scale
+                if self.scale_mode not in ('shape_bbox', 'shape_unit'):
+                    pc = (pc - shift) / scale
 
                 self.pointclouds.append({
                     'pointcloud': pc,
@@ -142,4 +151,3 @@ class ShapeNetCore(Dataset):
         if self.transform is not None:
             data = self.transform(data)
         return data
-

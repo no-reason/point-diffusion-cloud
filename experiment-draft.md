@@ -1184,3 +1184,1131 @@ Stage C3：training loss path / X_t shift dry-run。
 不 optimizer.step。
 不保存 checkpoint。
 ```
+
+
+可以。你现在已经把问题基本想清楚了，我帮你把 **Stage C 这一整套实验过程** 重新整理成一个清晰版本。核心目标是：围绕 **VAE-conditioned point-cloud diffusion model**，系统比较不同 poison branch loss 设计，判断 trigger 到底应该通过哪个通道起作用。
+
+---
+
+# 0. 总体研究问题
+
+你的模型不是原始 unconditional DDPM，而是：
+
+[
+x \xrightarrow{E_\phi} z
+]
+
+[
+\epsilon_\theta(x_t,t,z)
+]
+
+所以 diffusion denoiser 不是单纯看 (x_t)，而是看：
+
+[
+(x_t,\ t,\ z)
+]
+
+因此，后门训练必须明确三件事：
+
+```text
+1. trigger 加在哪里？
+2. poison branch 里的 z 来自哪里？
+3. poison loss 是否更新 encoder？
+```
+
+这就是你现在总结出来的关键问题。
+
+---
+
+# 1. 三个空间必须分清楚
+
+你的实验里同时有三个空间：
+
+| 空间                       | 符号            | 形状            | 作用                    |
+| ------------------------ | ------------- | ------------- | --------------------- |
+| 输入点云空间                   | (x, T_g(x))   | ([N,3])       | encoder 输入            |
+| VAE latent 空间            | (z=E_\phi(x)) | ([d_z])，如 512 | diffusion decoder 的条件 |
+| diffusion noisy state 空间 | (x_t, X_T)    | ([N,3])       | diffusion 去噪变量        |
+
+所以后门 trigger 有三种可能位置：
+
+```text
+输入点云 trigger:       T_g(x)
+diffusion state trigger: X_t + shift_mean(t) 或 X_T + r
+latent trigger:          z + r_z
+```
+
+你现在主线里不打算做 (z+r_z)，所以 latent trigger 暂时不作为主线。
+
+---
+
+# 2. Clean branch 是所有方案共有的
+
+所有实验的 clean branch 保持一致。
+
+给定干净 chair 点云：
+
+[
+x
+]
+
+encoder 得到：
+
+[
+z_x \sim q_\phi(z|x)
+]
+
+对 (x) 加噪：
+
+[
+x_t
+===
+
+\sqrt{\bar{\alpha}_t}x
++
+\sqrt{1-\bar{\alpha}_t}\epsilon
+]
+
+denoiser 预测：
+
+[
+\epsilon_\theta(x_t,t,z_x)
+]
+
+clean loss：
+
+[
+\mathcal{L}_{clean}
+===================
+
+\left|
+\epsilon_\theta(x_t,t,z_x)-\epsilon
+\right|*2^2
++
+\beta*{KL}
+D_{KL}(q_\phi(z|x)|N(0,I)).
+]
+
+这里要特别强调：
+
+```text
+z 和 x 的语义关系主要由 clean diffusion reconstruction loss 建立；
+KL 只是约束 q_phi(z|x) 接近 N(0,I)。
+```
+
+也就是说，不是 KL 让 (z) 表达 (x)，而是：
+
+[
+\epsilon_\theta(x_t,t,z_x)\rightarrow \epsilon
+]
+
+这个任务让 (z_x) 对 (x) 有意义。
+
+---
+
+# 3. Poison branch 的四种 loss 设计方案
+
+下面这四种就是你现在需要系统比较的方案。
+
+---
+
+## 方案 1：Prior-z BadDiffusion，也就是你上一轮 Stage C3
+
+这是已经做过并失败的版本。
+
+### 设计
+
+poison branch 不使用输入点云，不使用 encoder：
+
+[
+z_{bd}\sim N(0,I)
+]
+
+target 加噪：
+
+[
+y_t
+===
+
+\sqrt{\bar{\alpha}*t}y*{target}
++
+\sqrt{1-\bar{\alpha}_t}\epsilon
+]
+
+加入 diffusion-state trigger：
+
+[
+y_t^{bd}
+========
+
+y_t+
+\mathrm{shift_mean}(t)
+]
+
+其中：
+
+[
+\mathrm{shift_mean}(t)
+======================
+
+(1-\sqrt{\bar{\alpha}_t})r.
+]
+
+epsilon prediction 目标：
+
+[
+\epsilon_{bd}
+=============
+
+\epsilon+
+\frac{\mathrm{shift_mean}(t)}
+{\sqrt{1-\bar{\alpha}_t}}.
+]
+
+poison loss：
+
+[
+\mathcal{L}_{bd}^{prior}
+========================
+
+\left|
+\epsilon_\theta(y_t^{bd},t,z_{bd})
+----------------------------------
+
+\epsilon_{bd}
+\right|_2^2.
+]
+
+总 loss：
+
+[
+\mathcal{L}
+===========
+
+\lambda_c\mathcal{L}*{clean}
++
+\lambda*{bd}\mathcal{L}_{bd}^{prior}.
+]
+
+### 这个方案的问题
+
+正常推理时也是：
+
+[
+z\sim N(0,I)
+]
+
+所以 poison branch 的 (z_{bd}) 和正常 sampling 的 (z) 分布重合。
+
+模型容易学成：
+
+[
+z\sim N(0,I)\Rightarrow y_{target}
+]
+
+而不是：
+
+[
+X_T+r\Rightarrow y_{target}.
+]
+
+你上一轮 Stage C4 的结果正好验证了这个问题：
+
+```text
+C = BD model + normal X_T    -> target
+D = BD model + triggered X_T -> target
+```
+
+所以 verdict 是：
+
+```text
+NO_GO_TARGET_COLLAPSE
+```
+
+这个方案后续保留为失败对照，不作为主线继续优化。
+
+---
+
+## 方案 2：Source-z stop-gradient BadDiffusion
+
+这是最接近你现在想做的 **VAE-conditioned BadDiffusion** 主线。
+
+### 设计思想
+
+poison branch 使用输入点云 (x)，但 trigger 不加在 (x) 上。
+
+也就是说：
+
+```text
+输入点云 x 负责提供 z；
+trigger 负责修改 diffusion noisy state。
+```
+
+先得到 source latent：
+
+[
+z_x\sim q_\phi(z|x)
+]
+
+poison branch 使用：
+
+[
+z_{bd}
+======
+
+\operatorname{sg}(z_x)
+]
+
+其中：
+
+[
+\operatorname{sg}(\cdot)
+]
+
+表示 stop-gradient，PyTorch 中就是：
+
+```python
+z_bd = z_x.detach()
+```
+
+然后 target 加噪：
+
+[
+y_t
+===
+
+\sqrt{\bar{\alpha}*t}y*{target}
++
+\sqrt{1-\bar{\alpha}_t}\epsilon
+]
+
+加入 BadDiffusion shift：
+
+[
+y_t^{bd}
+========
+
+y_t+
+(1-\sqrt{\bar{\alpha}_t})r
+]
+
+对应目标：
+
+[
+\epsilon_{bd}
+=============
+
+\epsilon+
+\frac{(1-\sqrt{\bar{\alpha}_t})r}
+{\sqrt{1-\bar{\alpha}_t}}.
+]
+
+poison loss：
+
+[
+\mathcal{L}_{bd}^{source}
+=========================
+
+\left|
+\epsilon_\theta(y_t^{bd},t,\operatorname{sg}(z_x))
+--------------------------------------------------
+
+\epsilon_{bd}
+\right|_2^2.
+]
+
+总 loss：
+
+[
+\mathcal{L}
+===========
+
+\lambda_c
+\left[
+\mathcal{L}*{diff}^{clean}
++
+\beta*{KL}\mathcal{L}*{KL}
+\right]
++
+\lambda*{bd}
+\mathcal{L}_{bd}^{source}.
+]
+
+### 这个方案的语义
+
+它训练的是：
+
+```text
+同一个输入点云 x；
+同一个 latent condition z_x；
+普通 diffusion noisy state -> 正常输出；
+带 trigger 的 diffusion noisy state -> target。
+```
+
+推理时对应：
+
+[
+z=E_\phi(x)
+]
+
+正常：
+
+[
+X_T\sim N(0,I)
+]
+
+[
+(z,X_T)\rightarrow normal
+]
+
+触发：
+
+[
+X_T^{bd}=X_T+r
+]
+
+[
+(z,X_T+r)\rightarrow y_{target}.
+]
+
+### 为什么 stop-gradient？
+
+因为你不希望 poison loss 把 encoder 拉向 target。
+
+clean branch 希望：
+
+[
+E_\phi(x)\rightarrow x
+]
+
+poison branch 希望 decoder 在 triggered diffusion state 下输出：
+
+[
+y_{target}
+]
+
+所以比较安全的做法是：
+
+```text
+poison branch 使用 z_x；
+但 poison loss 不更新 encoder；
+主要更新 diffusion decoder。
+```
+
+这是我建议你下一轮优先做的主线实验。
+
+---
+
+## 方案 3：VAE-mediated input-trigger backdoor
+
+这是你刚刚提出的思路：
+
+[
+z_{bd}=E_\phi(T_g(x))
+]
+
+也就是：
+
+```text
+先在输入点云空间加 trigger；
+再经过 VAE encoder 得到 triggered latent；
+然后让 diffusion decoder 在这个 latent condition 下生成 target。
+```
+
+### 设计
+
+构造输入点云 trigger：
+
+[
+x_{trig}=T_g(x)
+]
+
+encoder 得到：
+
+[
+z_{trig}\sim q_\phi(z|x_{trig})
+]
+
+poison branch 可以先不加 diffusion-state trigger，只做普通 target diffusion：
+
+[
+y_t
+===
+
+\sqrt{\bar{\alpha}*t}y*{target}
++
+\sqrt{1-\bar{\alpha}_t}\epsilon
+]
+
+poison loss：
+
+[
+\mathcal{L}_{bd}^{input}
+========================
+
+\left|
+\epsilon_\theta(y_t,t,z_{trig})
+-------------------------------
+
+\epsilon
+\right|_2^2.
+]
+
+如果不想让 poison loss 更新 encoder，则使用：
+
+[
+z_{trig}^{sg}
+=============
+
+\operatorname{sg}(z_{trig})
+]
+
+对应：
+
+[
+\mathcal{L}_{bd}^{input-sg}
+===========================
+
+\left|
+\epsilon_\theta(y_t,t,\operatorname{sg}(z_{trig}))
+--------------------------------------------------
+
+\epsilon
+\right|_2^2.
+]
+
+如果想让 encoder 也学习 trigger，则不用 detach：
+
+[
+z_{trig}=E_\phi(T_g(x))
+]
+
+并且最好给 triggered posterior 加 KL：
+
+[
+D_{KL}(q_\phi(z|T_g(x))|N(0,I)).
+]
+
+### 这个方案的语义
+
+它不是 BadDiffusion-style 的 (X_T+r) 后门，而是：
+
+```text
+输入点云 trigger
+-> VAE encoder
+-> triggered latent condition
+-> target generation
+```
+
+也就是：
+
+[
+T_g(x)
+\rightarrow
+E_\phi(T_g(x))
+\rightarrow
+y_{target}.
+]
+
+这个方案其实非常适合研究：
+
+```text
+输入点云上的几何 trigger 是否可以通过 VAE latent condition 控制 diffusion generator？
+```
+
+这和你之前 Direction B 的思想更接近。
+
+---
+
+## 方案 4：Dual-trigger / VAE-mediated BadDiffusion
+
+这是最强但解释最复杂的版本。
+
+它同时使用：
+
+```text
+输入点云 trigger: T_g(x)
+diffusion state trigger: X_t + shift_mean(t)
+```
+
+### 设计
+
+输入点云加 trigger：
+
+[
+x_{trig}=T_g(x)
+]
+
+encoder 得到：
+
+[
+z_{trig}=E_\phi(x_{trig})
+]
+
+target 加噪：
+
+[
+y_t
+===
+
+\sqrt{\bar{\alpha}*t}y*{target}
++
+\sqrt{1-\bar{\alpha}_t}\epsilon
+]
+
+再加入 diffusion trigger：
+
+[
+y_t^{bd}
+========
+
+y_t+
+(1-\sqrt{\bar{\alpha}_t})r
+]
+
+目标噪声：
+
+[
+\epsilon_{bd}
+=============
+
+\epsilon+
+\frac{(1-\sqrt{\bar{\alpha}_t})r}
+{\sqrt{1-\bar{\alpha}_t}}.
+]
+
+poison loss：
+
+[
+\mathcal{L}_{bd}^{dual}
+=======================
+
+\left|
+\epsilon_\theta(y_t^{bd},t,z_{trig})
+------------------------------------
+
+\epsilon_{bd}
+\right|_2^2.
+]
+
+或者安全版本：
+
+[
+\mathcal{L}_{bd}^{dual-sg}
+==========================
+
+\left|
+\epsilon_\theta(y_t^{bd},t,\operatorname{sg}(z_{trig}))
+-------------------------------------------------------
+
+\epsilon_{bd}
+\right|_2^2.
+]
+
+### 这个方案的语义
+
+它训练的是：
+
+```text
+输入点云中有 trigger；
+diffusion noisy state 中也有 trigger；
+二者共同出现时生成 target。
+```
+
+这可能最容易成功，但如果成功，需要做消融判断：
+
+```text
+到底是输入点云 trigger 起作用？
+还是 X_T trigger 起作用？
+还是两个同时出现才起作用？
+```
+
+所以这个方案不能先做主线，应该放在方案 2 和方案 3 之后。
+
+---
+
+# 4. 推荐实验顺序
+
+我建议你不要四个方案一起乱跑，而是按下面顺序做。
+
+---
+
+## Stage C3：Prior-z BadDiffusion 已完成
+
+目的：
+
+```text
+测试 z_bd ~ N(0,I) 是否可行。
+```
+
+结果：
+
+```text
+NO_GO_TARGET_COLLAPSE
+```
+
+结论：
+
+```text
+z_bd ~ N(0,I) 会和正常 prior sampling 通道重合，
+导致模型把普通 prior-z generation 也拉向 target。
+```
+
+这部分可以作为论文里的 failed baseline / ablation。
+
+---
+
+## Stage C5：Source-z stop-gradient BadDiffusion
+
+这是下一步最应该做的。
+
+### 目的
+
+验证：
+
+```text
+在同一个 source latent z_x 下，
+normal X_T 是否保持正常；
+triggered X_T 是否生成 target。
+```
+
+### 训练链路
+
+clean：
+
+[
+z_x=E_\phi(x)
+]
+
+[
+x_t=\sqrt{\bar{\alpha}_t}x+\sqrt{1-\bar{\alpha}_t}\epsilon
+]
+
+[
+\epsilon_\theta(x_t,t,z_x)\rightarrow\epsilon
+]
+
+poison：
+
+[
+z_{bd}=\operatorname{sg}(z_x)
+]
+
+[
+y_t^{bd}
+========
+
+\sqrt{\bar{\alpha}*t}y*{target}
++
+\sqrt{1-\bar{\alpha}_t}\epsilon
++
+(1-\sqrt{\bar{\alpha}_t})r
+]
+
+[
+\epsilon_\theta(y_t^{bd},t,z_{bd})
+\rightarrow
+\epsilon_{bd}.
+]
+
+### 必须检查
+
+```text
+1. poison branch 使用 E(x)，不是 N(0,I)
+2. poison branch 的 z_bd detach
+3. poison branch 不使用 E(y_target)
+4. trigger 不加在输入点云 x 上
+5. trigger 只加在 y_t / X_t 上
+6. poison loss 不更新 encoder
+7. clean loss 正常更新 encoder + decoder
+```
+
+### 评估组
+
+使用 source input (x)：
+
+[
+z_x=E(x)
+]
+
+四组：
+
+```text
+A = clean model + z_x + normal X_T
+B = clean model + z_x + triggered X_T
+C = backdoor model + z_x + normal X_T
+D = backdoor model + z_x + triggered X_T
+```
+
+理想结果：
+
+```text
+A 不接近 target
+B 不接近 target
+C 不接近 target
+D 接近 target
+```
+
+判定：
+
+```text
+如果 D 接近 target，C 不接近 target：GO
+如果 C 和 D 都接近 target：target collapse
+如果 C 正常，D 不接近 target：attack fail
+如果 clean 组明显变差：utility fail
+```
+
+---
+
+## Stage C6：VAE-mediated input-trigger backdoor
+
+目的：
+
+```text
+测试输入点云 trigger 是否可以通过 VAE latent condition 控制生成 target。
+```
+
+### 训练链路
+
+clean：
+
+[
+z_x=E(x)
+]
+
+[
+x_t\rightarrow x
+]
+
+poison：
+
+[
+x_{trig}=T_g(x)
+]
+
+[
+z_{trig}=E(x_{trig})
+]
+
+[
+y_t=
+\sqrt{\bar{\alpha}*t}y*{target}
++
+\sqrt{1-\bar{\alpha}_t}\epsilon
+]
+
+[
+\epsilon_\theta(y_t,t,z_{trig})
+\rightarrow
+\epsilon.
+]
+
+### 两个版本
+
+安全版本：
+
+[
+z_{trig}=\operatorname{sg}(E(T_g(x)))
+]
+
+强攻击版本：
+
+[
+z_{trig}=E(T_g(x))
+]
+
+并允许 poison loss 更新 encoder。
+
+如果允许更新 encoder，建议 poison branch 也加：
+
+[
+\beta_{KL}
+D_{KL}(q_\phi(z|T_g(x))|N(0,I)).
+]
+
+### 评估组
+
+```text
+A = clean model + E(x)      + normal X_T
+B = clean model + E(T_g(x)) + normal X_T
+C = BD model    + E(x)      + normal X_T
+D = BD model    + E(T_g(x)) + normal X_T
+```
+
+理想结果：
+
+```text
+A 不接近 target
+B 不接近 target
+C 不接近 target
+D 接近 target
+```
+
+如果成功，说明：
+
+```text
+输入点云 trigger 通过 VAE encoder 映射成了有效的 triggered latent condition。
+```
+
+---
+
+## Stage C7：Dual-trigger backdoor
+
+目的：
+
+```text
+测试输入点云 trigger 和 diffusion-state trigger 同时存在时是否能更稳定触发 target。
+```
+
+### 训练链路
+
+[
+x_{trig}=T_g(x)
+]
+
+[
+z_{trig}=E(x_{trig})
+]
+
+[
+y_t^{bd}
+========
+
+\sqrt{\bar{\alpha}*t}y*{target}
++
+\sqrt{1-\bar{\alpha}_t}\epsilon
++
+(1-\sqrt{\bar{\alpha}_t})r
+]
+
+[
+\epsilon_\theta(y_t^{bd},t,z_{trig})
+\rightarrow
+\epsilon_{bd}.
+]
+
+### 评估组必须更多
+
+至少六组：
+
+```text
+A = clean model + E(x)      + normal X_T
+B = clean model + E(x)      + triggered X_T
+C = BD model    + E(x)      + normal X_T
+D = BD model    + E(x)      + triggered X_T
+E = BD model    + E(T_g(x)) + normal X_T
+F = BD model    + E(T_g(x)) + triggered X_T
+```
+
+理想的 dual-trigger 结果是：
+
+```text
+C 不接近 target
+D 不接近 target 或弱接近
+E 不接近 target 或弱接近
+F 明显接近 target
+```
+
+如果 D 单独成功，说明 diffusion-state trigger 足够。
+如果 E 单独成功，说明 input-trigger latent 足够。
+如果只有 F 成功，说明确实是 dual-trigger。
+
+---
+
+# 5. 每个实验都应该输出哪些指标？
+
+每个 Stage 都建议统一输出这些指标。
+
+## 1. Target attraction
+
+Chamfer distance 到 fixed target：
+
+[
+CD(\hat{x},y_{target})
+]
+
+统计：
+
+```text
+mean
+median
+std
+min / max
+q25 / q75
+```
+
+## 2. Clean utility
+
+正常输入生成结果到 source (x) 的 CD：
+
+[
+CD(\hat{x},x)
+]
+
+或者与 clean model 对比：
+
+[
+CD(\hat{x}*{BD},\hat{x}*{clean})
+]
+
+## 3. Attack specificity
+
+核心比较：
+
+```text
+normal condition 是否不触发？
+triggered condition 是否触发？
+```
+
+例如 Stage C5：
+
+[
+C = BD + normal X_T
+]
+
+[
+D = BD + triggered X_T
+]
+
+必须满足：
+
+```text
+D_target_CD << C_target_CD
+```
+
+## 4. Trigger leakage
+
+clean model 上测试 trigger：
+
+```text
+clean model + trigger
+```
+
+如果 clean model 被 trigger 后也接近 target，说明 trigger 本身有天然偏置，不是训练后门学到的。
+
+## 5. Collapse 检查
+
+只要出现：
+
+```text
+BD model + normal condition -> target
+```
+
+就判定：
+
+```text
+TARGET_COLLAPSE
+```
+
+这是上一轮 Stage C3 的主要问题。
+
+---
+
+# 6. 统一 verdict 标准
+
+建议你以后每个 Stage 都用同一套 verdict。
+
+## GO
+
+```text
+clean utility 保持；
+normal condition 不接近 target；
+triggered condition 明显接近 target；
+clean model 没有 trigger leakage。
+```
+
+## PARTIAL_GO
+
+```text
+triggered condition 比 normal condition 更接近 target；
+但 attack gain 不够强，或者 clean utility 有轻微下降。
+```
+
+## NO_GO_TARGET_COLLAPSE
+
+```text
+BD model 在 normal condition 下也生成 target。
+```
+
+## NO_GO_ATTACK_FAIL
+
+```text
+BD model 在 triggered condition 下也不能接近 target。
+```
+
+## NO_GO_UTILITY_FAIL
+
+```text
+后门训练破坏 clean generation。
+```
+
+---
+
+# 7. 推荐的实验主线
+
+我建议你后续按这个路线推进：
+
+```text
+Stage C3: Prior-z BadDiffusion
+状态：已完成，NO_GO_TARGET_COLLAPSE
+
+Stage C5: Source-z stop-gradient BadDiffusion
+目标：修复 z_bd ~ N(0,I) collapse，测试纯 X_T trigger 是否可行
+
+Stage C6: VAE-mediated input-trigger backdoor
+目标：测试 T_g(x) -> E(T_g(x)) -> target 是否可行
+
+Stage C7: Dual-trigger backdoor
+目标：测试 input trigger + diffusion-state trigger 是否更稳定
+```
+
+主线优先级：
+
+```text
+第一优先级：Stage C5
+第二优先级：Stage C6
+第三优先级：Stage C7
+```
+
+原因是：
+
+```text
+Stage C5 最接近 BadDiffusion；
+Stage C6 最接近你“考虑 VAE 影响”的输入触发问题；
+Stage C7 是组合增强，需要等前两个分支结果出来后再解释。
+```
+
+---
+
+# 8. 最终你可以形成的实验故事线
+
+论文/实验叙事可以这样组织：
+
+```text
+我们首先直接迁移原始 BadDiffusion，将 poison branch 的 latent condition 设为 prior z~N(0,I)，并在 diffusion noisy state 上注入 trigger。实验发现该设计导致 target collapse，因为 prior latent 与正常 sampling latent 分布重合。
+
+为解决该问题，我们进一步考虑 VAE-conditioned generator 的结构特性，提出 source-latent conditional BadDiffusion：poison branch 使用输入点云 x 编码得到的 source latent z_x，并通过 stop-gradient 避免 poison loss 破坏 encoder。该设计将触发差异限定在 diffusion noisy state 中。
+
+随后，为分析输入点云 trigger 经过 VAE encoder 的作用，我们设计 VAE-mediated input-trigger backdoor，将 T_g(x) 输入 encoder 得到 triggered latent condition，并测试其是否能控制 diffusion decoder 生成 target。
+
+最后，我们评估 dual-trigger 设置，即输入点云 trigger 与 diffusion-state trigger 同时存在，分析二者的单独作用和联合触发效果。
+```
+
+---
+
+# 9. 一句话总括
+
+你现在的完整实验过程应该围绕这个问题展开：
+
+```text
+在 VAE-conditioned point-cloud diffusion 中，后门触发信号到底应该通过 diffusion noisy state、VAE latent condition，还是二者共同作用来控制生成结果？
+```
+
+四种 loss 设计正好对应四个回答：
+
+```text
+1. prior-z + diffusion trigger：失败对照，容易 target collapse
+2. source-z sg + diffusion trigger：最接近 BadDiffusion 的主线
+3. E(T_g(x)) + no diffusion trigger：VAE-mediated input-trigger 主线
+4. E(T_g(x)) + diffusion trigger：dual-trigger 增强分支
+```

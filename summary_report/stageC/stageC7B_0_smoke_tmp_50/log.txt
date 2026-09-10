@@ -1,0 +1,19 @@
+[2026-07-06 02:38:00,993::train_bd::INFO] === BadDiffusion Config ===
+[2026-07-06 02:38:00,994::train_bd::INFO] bd_mode: diffusion_state_trigger
+[2026-07-06 02:38:00,994::train_bd::INFO] bd_target_path: ./targets/stage3_fixed_chair_target.npy
+[2026-07-06 02:38:00,994::train_bd::INFO] lambda_clean: 1.0, lambda_bd: 50.0
+[2026-07-06 02:38:00,994::train_bd::INFO] poison_rate: 0.1
+[2026-07-06 02:38:00,994::train_bd::INFO] trigger_type: cluster, num_trigger_points: 200
+[2026-07-06 02:38:00,994::train_bd::INFO] bd_loss_variant: original_epsilon_target
+[2026-07-06 02:38:04,839::train_bd::INFO] Loaded fixed target shape: torch.Size([1, 2048, 3]), finite: True
+[2026-07-06 02:38:04,839::train_bd::INFO] Loading datasets...
+[2026-07-06 02:38:33,797::train_bd::INFO] Building model...
+[2026-07-06 02:38:33,797::train_bd::INFO] Loading checkpoint from ./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt
+[2026-07-06 02:38:33,866::train_bd::INFO] Start training smoke test...
+[2026-07-06 02:38:33,988::train_bd::INFO] [Step 1] eff_clean: 217.0609, eff_bd: 23.8823, eff_ratio: 0.1100 | GN: 496.6003
+[2026-07-06 02:38:34,058::train_bd::INFO] [Step 2] eff_clean: 217.0367, eff_bd: 25.2026, eff_ratio: 0.1161 | GN: 557.3273
+[2026-07-06 02:38:34,125::train_bd::INFO] [Step 3] eff_clean: 217.0066, eff_bd: 23.3664, eff_ratio: 0.1077 | GN: 492.3235
+[2026-07-06 02:38:34,191::train_bd::INFO] [Step 4] eff_clean: 216.9311, eff_bd: 21.3752, eff_ratio: 0.0985 | GN: 408.9695
+[2026-07-06 02:38:34,259::train_bd::INFO] [Step 5] eff_clean: 216.9412, eff_bd: 21.2084, eff_ratio: 0.0978 | GN: 412.9188
+[2026-07-06 02:38:34,300::train_bd::INFO] Temporary checkpoint saved to ./summary_report/stageC/stageC7B_0_smoke_tmp_50/smoke_tmp_ckpt.pt. THIS IS NOT A FORMAL CHECKPOINT.
+[2026-07-06 02:38:34,301::train_bd::INFO] Smoke test completed.

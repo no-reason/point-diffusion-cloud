@@ -1,0 +1,9 @@
+{
+    "Target_Mode": "distribution",
+    "Group_C_Average_CD_to_Target": 0.4434402287006378,
+    "Group_D_Average_CD_to_Target": 0.14976446330547333,
+    "Group_C_MMD_CD_to_Target": 0.345206081867218,
+    "Group_D_MMD_CD_to_Target": 0.11377125233411789,
+    "Distribution_ASR_Percent": 89.46608946608947,
+    "Group_C_Utility_CD_to_Source": 0.16864237189292908
+}

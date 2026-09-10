@@ -118,10 +118,19 @@ class DiffusionPoint(Module):
         loss = F.mse_loss(e_theta.view(-1, point_dim), e_rand.view(-1, point_dim), reduction='mean')
         return loss
 
-    def sample(self, num_points, context, point_dim=3, flexibility=0.0, ret_traj=False):
+    def sample(self, num_points, context, point_dim=3, flexibility=0.0, ret_traj=False, initial_x_T=None, return_trace=False):
         batch_size = context.size(0)
-        x_T = torch.randn([batch_size, num_points, point_dim]).to(context.device)
+        if initial_x_T is None:
+            x_T = torch.randn([batch_size, num_points, point_dim]).to(context.device)
+        else:
+            x_T = initial_x_T.to(context.device)
+            assert x_T.shape == (batch_size, num_points, point_dim)
+
         traj = {self.var_sched.num_steps: x_T}
+        trace = {}
+        if return_trace:
+            trace["initial_x_T"] = x_T.detach().cpu()
+
         for t in range(self.var_sched.num_steps, 0, -1):
             z = torch.randn_like(x_T) if t > 1 else torch.zeros_like(x_T)
             alpha = self.var_sched.alphas[t]
@@ -132,14 +141,25 @@ class DiffusionPoint(Module):
             c1 = (1 - alpha) / torch.sqrt(1 - alpha_bar)
 
             x_t = traj[t]
+            if return_trace and t == self.var_sched.num_steps:
+                trace["first_reverse_input"] = x_t.detach().cpu()
+
             beta = self.var_sched.betas[[t]*batch_size]
             e_theta = self.net(x_t, beta=beta, context=context)
             x_next = c0 * (x_t - c1 * e_theta) + sigma * z
+            
+            if return_trace and t == self.var_sched.num_steps:
+                trace["first_reverse_output"] = x_next.detach().cpu()
+
             traj[t-1] = x_next.detach()     # Stop gradient and save trajectory.
             traj[t] = traj[t].cpu()         # Move previous output to CPU memory.
             if not ret_traj:
                 del traj[t]
         
+        if return_trace:
+            trace["final_x_0"] = traj[0].detach().cpu()
+            return trace
+
         if ret_traj:
             return traj
         else:

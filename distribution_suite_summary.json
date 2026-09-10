@@ -1,0 +1,272 @@
+[
+    {
+        "tag": "Dist_Task_A_Chair_to_Airplane_Dist",
+        "config": {
+            "tag": "Dist_Task_A_Chair_to_Airplane_Dist",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_mode": "distribution",
+            "target_categories": "airplane",
+            "target_name": "Airplane Distribution",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Dist_Task_A_Chair_to_Airplane_Dist2026_07_25__09_57_04",
+        "bd_ckpt": "./logs_stageC/Dist_Task_A_Chair_to_Airplane_Dist2026_07_25__09_57_04/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Dist_Task_A_Chair_to_Airplane_Dist2026_07_25__09_57_04/visuals_distribution.png",
+        "metrics": {
+            "Target_Mode": "distribution",
+            "Group_C_Average_CD_to_Target": 0.47977903485298157,
+            "Group_D_Average_CD_to_Target": 0.11808137595653534,
+            "Group_C_MMD_CD_to_Target": 0.2676338255405426,
+            "Group_D_MMD_CD_to_Target": 0.11734449863433838,
+            "Distribution_ASR_Percent": 98.7012987012987,
+            "Group_C_Utility_CD_to_Source": 0.12311916053295135
+        }
+    },
+    {
+        "tag": "Dist_Task_B_Chair_to_Chair_Dist",
+        "config": {
+            "tag": "Dist_Task_B_Chair_to_Chair_Dist",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_mode": "distribution",
+            "target_categories": "chair",
+            "target_name": "Chair Distribution",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Dist_Task_B_Chair_to_Chair_Dist2026_07_25__10_10_41",
+        "bd_ckpt": "./logs_stageC/Dist_Task_B_Chair_to_Chair_Dist2026_07_25__10_10_41/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Dist_Task_B_Chair_to_Chair_Dist2026_07_25__10_10_41/visuals_distribution.png",
+        "metrics": {
+            "Target_Mode": "distribution",
+            "Group_C_Average_CD_to_Target": 0.6190159916877747,
+            "Group_D_Average_CD_to_Target": 0.5191553235054016,
+            "Group_C_MMD_CD_to_Target": 0.12037159502506256,
+            "Group_D_MMD_CD_to_Target": 0.1807241439819336,
+            "Distribution_ASR_Percent": 12.554112554112553,
+            "Group_C_Utility_CD_to_Source": 0.1203698068857193
+        }
+    },
+    {
+        "tag": "Dist_Task_C_Airplane_to_Chair_Dist",
+        "config": {
+            "tag": "Dist_Task_C_Airplane_to_Chair_Dist",
+            "cates": "airplane",
+            "clean_ckpt": "./logs_gen/GEN_2026_07_09__16_01_08_Clean_Airplane_From_Scratch_KL001/ckpt_0.775660_300000.pt",
+            "target_mode": "distribution",
+            "target_categories": "chair",
+            "target_name": "Chair Distribution",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Dist_Task_C_Airplane_to_Chair_Dist2026_07_25__10_25_30",
+        "bd_ckpt": "./logs_stageC/Dist_Task_C_Airplane_to_Chair_Dist2026_07_25__10_25_30/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Dist_Task_C_Airplane_to_Chair_Dist2026_07_25__10_25_30/visuals_distribution.png",
+        "metrics": {
+            "Target_Mode": "distribution",
+            "Group_C_Average_CD_to_Target": 0.7662312388420105,
+            "Group_D_Average_CD_to_Target": 0.5154535174369812,
+            "Group_C_MMD_CD_to_Target": 0.3571855127811432,
+            "Group_D_MMD_CD_to_Target": 0.21574880182743073,
+            "Distribution_ASR_Percent": 0.0,
+            "Group_C_Utility_CD_to_Source": 0.07497040927410126
+        }
+    },
+    {
+        "tag": "Dist_Task_D_Airplane_to_Airplane_Dist",
+        "config": {
+            "tag": "Dist_Task_D_Airplane_to_Airplane_Dist",
+            "cates": "airplane",
+            "clean_ckpt": "./logs_gen/GEN_2026_07_09__16_01_08_Clean_Airplane_From_Scratch_KL001/ckpt_0.775660_300000.pt",
+            "target_mode": "distribution",
+            "target_categories": "airplane",
+            "target_name": "Airplane Distribution",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Dist_Task_D_Airplane_to_Airplane_Dist2026_07_25__10_38_14",
+        "bd_ckpt": "./logs_stageC/Dist_Task_D_Airplane_to_Airplane_Dist2026_07_25__10_38_14/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Dist_Task_D_Airplane_to_Airplane_Dist2026_07_25__10_38_14/visuals_distribution.png",
+        "metrics": {
+            "Target_Mode": "distribution",
+            "Group_C_Average_CD_to_Target": 0.08945222198963165,
+            "Group_D_Average_CD_to_Target": 0.09653035551309586,
+            "Group_C_MMD_CD_to_Target": 0.0778474286198616,
+            "Group_D_MMD_CD_to_Target": 0.09978765994310379,
+            "Distribution_ASR_Percent": 100.0,
+            "Group_C_Utility_CD_to_Source": 0.07799471914768219
+        }
+    },
+    {
+        "tag": "Dist_Abl_PR0015_Chair_to_Airplane_Dist",
+        "config": {
+            "tag": "Dist_Abl_PR0015_Chair_to_Airplane_Dist",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_mode": "distribution",
+            "target_categories": "airplane",
+            "target_name": "Airplane Distribution",
+            "poison_rate": 0.015625,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Dist_Abl_PR0015_Chair_to_Airplane_Dist2026_07_25__10_50_39",
+        "bd_ckpt": "./logs_stageC/Dist_Abl_PR0015_Chair_to_Airplane_Dist2026_07_25__10_50_39/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Dist_Abl_PR0015_Chair_to_Airplane_Dist2026_07_25__10_50_39/visuals_distribution.png",
+        "metrics": {
+            "Target_Mode": "distribution",
+            "Group_C_Average_CD_to_Target": 0.47774723172187805,
+            "Group_D_Average_CD_to_Target": 0.11934807151556015,
+            "Group_C_MMD_CD_to_Target": 0.2582184374332428,
+            "Group_D_MMD_CD_to_Target": 0.11721546947956085,
+            "Distribution_ASR_Percent": 98.7012987012987,
+            "Group_C_Utility_CD_to_Source": 0.1230832040309906
+        }
+    },
+    {
+        "tag": "Dist_Abl_PR00625_Chair_to_Airplane_Dist",
+        "config": {
+            "tag": "Dist_Abl_PR00625_Chair_to_Airplane_Dist",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_mode": "distribution",
+            "target_categories": "airplane",
+            "target_name": "Airplane Distribution",
+            "poison_rate": 0.0625,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Dist_Abl_PR00625_Chair_to_Airplane_Dist2026_07_25__11_04_09",
+        "bd_ckpt": "./logs_stageC/Dist_Abl_PR00625_Chair_to_Airplane_Dist2026_07_25__11_04_09/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Dist_Abl_PR00625_Chair_to_Airplane_Dist2026_07_25__11_04_09/visuals_distribution.png",
+        "metrics": {
+            "Target_Mode": "distribution",
+            "Group_C_Average_CD_to_Target": 0.48525816202163696,
+            "Group_D_Average_CD_to_Target": 0.10546201467514038,
+            "Group_C_MMD_CD_to_Target": 0.2543104887008667,
+            "Group_D_MMD_CD_to_Target": 0.11349087953567505,
+            "Distribution_ASR_Percent": 99.71139971139971,
+            "Group_C_Utility_CD_to_Source": 0.1277131885290146
+        }
+    },
+    {
+        "tag": "Dist_Abl_Eps03_Chair_to_Airplane_Dist",
+        "config": {
+            "tag": "Dist_Abl_Eps03_Chair_to_Airplane_Dist",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_mode": "distribution",
+            "target_categories": "airplane",
+            "target_name": "Airplane Distribution",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.3,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Dist_Abl_Eps03_Chair_to_Airplane_Dist2026_07_25__11_17_38",
+        "bd_ckpt": "./logs_stageC/Dist_Abl_Eps03_Chair_to_Airplane_Dist2026_07_25__11_17_38/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Dist_Abl_Eps03_Chair_to_Airplane_Dist2026_07_25__11_17_38/visuals_distribution.png",
+        "metrics": {
+            "Target_Mode": "distribution",
+            "Group_C_Average_CD_to_Target": 0.46540477871894836,
+            "Group_D_Average_CD_to_Target": 0.13963916897773743,
+            "Group_C_MMD_CD_to_Target": 0.2346545159816742,
+            "Group_D_MMD_CD_to_Target": 0.12540143728256226,
+            "Distribution_ASR_Percent": 91.63059163059162,
+            "Group_C_Utility_CD_to_Source": 0.12644325196743011
+        }
+    },
+    {
+        "tag": "Dist_Abl_Eps08_Chair_to_Airplane_Dist",
+        "config": {
+            "tag": "Dist_Abl_Eps08_Chair_to_Airplane_Dist",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_mode": "distribution",
+            "target_categories": "airplane",
+            "target_name": "Airplane Distribution",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.8,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Dist_Abl_Eps08_Chair_to_Airplane_Dist2026_07_25__11_31_26",
+        "bd_ckpt": "./logs_stageC/Dist_Abl_Eps08_Chair_to_Airplane_Dist2026_07_25__11_31_26/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Dist_Abl_Eps08_Chair_to_Airplane_Dist2026_07_25__11_31_26/visuals_distribution.png",
+        "metrics": {
+            "Target_Mode": "distribution",
+            "Group_C_Average_CD_to_Target": 0.48213422298431396,
+            "Group_D_Average_CD_to_Target": 0.11674801260232925,
+            "Group_C_MMD_CD_to_Target": 0.26035916805267334,
+            "Group_D_MMD_CD_to_Target": 0.11680933833122253,
+            "Distribution_ASR_Percent": 99.13419913419914,
+            "Group_C_Utility_CD_to_Source": 0.12078878283500671
+        }
+    },
+    {
+        "tag": "Dist_Abl_Weight4_Chair_to_Airplane_Dist",
+        "config": {
+            "tag": "Dist_Abl_Weight4_Chair_to_Airplane_Dist",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_mode": "distribution",
+            "target_categories": "airplane",
+            "target_name": "Airplane Distribution",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 4.0
+        },
+        "log_dir": "./logs_stageC/Dist_Abl_Weight4_Chair_to_Airplane_Dist2026_07_25__11_44_56",
+        "bd_ckpt": "./logs_stageC/Dist_Abl_Weight4_Chair_to_Airplane_Dist2026_07_25__11_44_56/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Dist_Abl_Weight4_Chair_to_Airplane_Dist2026_07_25__11_44_56/visuals_distribution.png",
+        "metrics": {
+            "Target_Mode": "distribution",
+            "Group_C_Average_CD_to_Target": 0.4849473536014557,
+            "Group_D_Average_CD_to_Target": 0.13887475430965424,
+            "Group_C_MMD_CD_to_Target": 0.264146625995636,
+            "Group_D_MMD_CD_to_Target": 0.1232936680316925,
+            "Distribution_ASR_Percent": 93.36219336219335,
+            "Group_C_Utility_CD_to_Source": 0.11745959520339966
+        }
+    },
+    {
+        "tag": "Dist_Abl_Weight12_Chair_to_Airplane_Dist",
+        "config": {
+            "tag": "Dist_Abl_Weight12_Chair_to_Airplane_Dist",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_mode": "distribution",
+            "target_categories": "airplane",
+            "target_name": "Airplane Distribution",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 12.0
+        },
+        "log_dir": "./logs_stageC/Dist_Abl_Weight12_Chair_to_Airplane_Dist2026_07_25__11_58_32",
+        "bd_ckpt": "./logs_stageC/Dist_Abl_Weight12_Chair_to_Airplane_Dist2026_07_25__11_58_32/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Dist_Abl_Weight12_Chair_to_Airplane_Dist2026_07_25__11_58_32/visuals_distribution.png",
+        "metrics": {
+            "Target_Mode": "distribution",
+            "Group_C_Average_CD_to_Target": 0.47751519083976746,
+            "Group_D_Average_CD_to_Target": 0.11440178751945496,
+            "Group_C_MMD_CD_to_Target": 0.2517436742782593,
+            "Group_D_MMD_CD_to_Target": 0.11659207940101624,
+            "Distribution_ASR_Percent": 99.27849927849928,
+            "Group_C_Utility_CD_to_Source": 0.1271241158246994
+        }
+    }
+]

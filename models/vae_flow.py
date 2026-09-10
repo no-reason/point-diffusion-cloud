@@ -6,8 +6,8 @@ from .encoders import *
 from .diffusion import *
 from .flow import *
 from .encoders.dgcnn import DGCNNVAEEncoder
-from .encoders.pointmae import PointMAEVAEEncoder
-from pointnet2_ops import pointnet2_utils
+# from .encoders.pointmae import PointMAEVAEEncoder
+# from pointnet2_ops import pointnet2_utils
 
 
 class FlowVAE(Module):

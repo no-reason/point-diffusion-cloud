@@ -1,0 +1,15 @@
+{
+    "tag": "Task_Stochastic_Trigger_Dist_Airplane_to_Chair",
+    "log_dir": "./logs_stageC/Task_Stochastic_Trigger_Dist_Airplane_to_Chair2026_07_26__16_01_00",
+    "bd_ckpt": "./logs_stageC/Task_Stochastic_Trigger_Dist_Airplane_to_Chair2026_07_26__16_01_00/ckpt_10000.pt",
+    "visuals_png": "./stoch_trigger_distribution_steering_visuals_airplane_to_chair.png",
+    "metrics": {
+        "Target_Mode": "distribution",
+        "Group_C_Average_CD_to_Target": 0.7400302886962891,
+        "Group_D_Average_CD_to_Target": 0.5329327583312988,
+        "Group_C_MMD_CD_to_Target": 0.391874760389328,
+        "Group_D_MMD_CD_to_Target": 0.22305071353912354,
+        "Distribution_ASR_Percent": 0.0,
+        "Group_C_Utility_CD_to_Source": 0.09048086404800415
+    }
+}

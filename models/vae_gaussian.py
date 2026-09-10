@@ -45,12 +45,18 @@ class GaussianVAE(Module):
 
         return loss
 
-    def sample(self, z, num_points, flexibility, truncate_std=None):
+    def sample(self, z, num_points, flexibility, truncate_std=None, initial_x_T=None, return_trace=False):
         """
         Args:
             z:  Input latent, normal random samples with mean=0 std=1, (B, F)
         """
         if truncate_std is not None:
             z = truncated_normal_(z, mean=0, std=1, trunc_std=truncate_std)
-        samples = self.diffusion.sample(num_points, context=z, flexibility=flexibility)
+        samples = self.diffusion.sample(
+            num_points, 
+            context=z, 
+            flexibility=flexibility,
+            initial_x_T=initial_x_T,
+            return_trace=return_trace
+        )
         return samples

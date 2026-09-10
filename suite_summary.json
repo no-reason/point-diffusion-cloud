@@ -1,0 +1,232 @@
+[
+    {
+        "tag": "Task_A_Chair_to_Airplane",
+        "config": {
+            "tag": "Task_A_Chair_to_Airplane",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_file": "./targets/stageC8E_fixed_airplane_target.npy",
+            "target_name": "Airplane",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Task_A_Chair_to_Airplane2026_07_25__07_35_09",
+        "bd_ckpt": "./logs_stageC/Task_A_Chair_to_Airplane2026_07_25__07_35_09/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Task_A_Chair_to_Airplane2026_07_25__07_35_09/visuals.png",
+        "metrics": {
+            "Group_C_Average_CD_to_Target": 0.5216431617736816,
+            "Group_D_Average_CD_to_Target": 0.051862508058547974,
+            "Group_C_MMD_CD_to_Target": 0.39063555002212524,
+            "Group_D_MMD_CD_to_Target": 0.03845244646072388,
+            "Group_C_Utility_CD_to_Source": 0.12387516349554062
+        }
+    },
+    {
+        "tag": "Task_B_Chair_to_Chair",
+        "config": {
+            "tag": "Task_B_Chair_to_Chair",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_file": "./targets/stage3_fixed_chair_target.npy",
+            "target_name": "Chair",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Task_B_Chair_to_Chair2026_07_25__07_46_51",
+        "bd_ckpt": "./logs_stageC/Task_B_Chair_to_Chair2026_07_25__07_46_51/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Task_B_Chair_to_Chair2026_07_25__07_46_51/visuals.png",
+        "metrics": {
+            "Group_C_Average_CD_to_Target": 0.6203261613845825,
+            "Group_D_Average_CD_to_Target": 0.11782269179821014,
+            "Group_C_MMD_CD_to_Target": 0.18882335722446442,
+            "Group_D_MMD_CD_to_Target": 0.10870866477489471,
+            "Group_C_Utility_CD_to_Source": 0.12264871597290039
+        }
+    },
+    {
+        "tag": "Task_C_Airplane_to_Chair",
+        "config": {
+            "tag": "Task_C_Airplane_to_Chair",
+            "cates": "airplane",
+            "clean_ckpt": "./logs_gen/GEN_2026_07_09__16_01_08_Clean_Airplane_From_Scratch_KL001/ckpt_0.775660_300000.pt",
+            "target_file": "./targets/stage3_fixed_chair_target.npy",
+            "target_name": "Chair",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Task_C_Airplane_to_Chair2026_07_25__07_58_17",
+        "bd_ckpt": "./logs_stageC/Task_C_Airplane_to_Chair2026_07_25__07_58_17/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Task_C_Airplane_to_Chair2026_07_25__07_58_17/visuals.png",
+        "metrics": {
+            "Group_C_Average_CD_to_Target": 0.7652884721755981,
+            "Group_D_Average_CD_to_Target": 0.11355726420879364,
+            "Group_C_MMD_CD_to_Target": 0.556322455406189,
+            "Group_D_MMD_CD_to_Target": 0.10849304497241974,
+            "Group_C_Utility_CD_to_Source": 0.07420240342617035
+        }
+    },
+    {
+        "tag": "Task_D_Airplane_to_Airplane",
+        "config": {
+            "tag": "Task_D_Airplane_to_Airplane",
+            "cates": "airplane",
+            "clean_ckpt": "./logs_gen/GEN_2026_07_09__16_01_08_Clean_Airplane_From_Scratch_KL001/ckpt_0.775660_300000.pt",
+            "target_file": "./targets/stageC8E_fixed_airplane_target.npy",
+            "target_name": "Airplane",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Task_D_Airplane_to_Airplane2026_07_25__08_09_12",
+        "bd_ckpt": "./logs_stageC/Task_D_Airplane_to_Airplane2026_07_25__08_09_12/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Task_D_Airplane_to_Airplane2026_07_25__08_09_12/visuals.png",
+        "metrics": {
+            "Group_C_Average_CD_to_Target": 0.2829720079898834,
+            "Group_D_Average_CD_to_Target": 0.03337126597762108,
+            "Group_C_MMD_CD_to_Target": 0.17116183042526245,
+            "Group_D_MMD_CD_to_Target": 0.02515515312552452,
+            "Group_C_Utility_CD_to_Source": 0.0738891139626503
+        }
+    },
+    {
+        "tag": "Abl_PR0015_Chair_to_Airplane",
+        "config": {
+            "tag": "Abl_PR0015_Chair_to_Airplane",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_file": "./targets/stageC8E_fixed_airplane_target.npy",
+            "target_name": "Airplane",
+            "poison_rate": 0.015625,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Abl_PR0015_Chair_to_Airplane2026_07_25__08_20_06",
+        "bd_ckpt": "./logs_stageC/Abl_PR0015_Chair_to_Airplane2026_07_25__08_20_06/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Abl_PR0015_Chair_to_Airplane2026_07_25__08_20_06/visuals.png",
+        "metrics": {
+            "Group_C_Average_CD_to_Target": 0.5200353264808655,
+            "Group_D_Average_CD_to_Target": 0.053188107907772064,
+            "Group_C_MMD_CD_to_Target": 0.3950802683830261,
+            "Group_D_MMD_CD_to_Target": 0.03987377882003784,
+            "Group_C_Utility_CD_to_Source": 0.12335597723722458
+        }
+    },
+    {
+        "tag": "Abl_PR00625_Chair_to_Airplane",
+        "config": {
+            "tag": "Abl_PR00625_Chair_to_Airplane",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_file": "./targets/stageC8E_fixed_airplane_target.npy",
+            "target_name": "Airplane",
+            "poison_rate": 0.0625,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Abl_PR00625_Chair_to_Airplane2026_07_25__08_31_36",
+        "bd_ckpt": "./logs_stageC/Abl_PR00625_Chair_to_Airplane2026_07_25__08_31_36/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Abl_PR00625_Chair_to_Airplane2026_07_25__08_31_36/visuals.png",
+        "metrics": {
+            "Group_C_Average_CD_to_Target": 0.516995906829834,
+            "Group_D_Average_CD_to_Target": 0.04038645699620247,
+            "Group_C_MMD_CD_to_Target": 0.3972923755645752,
+            "Group_D_MMD_CD_to_Target": 0.03360212221741676,
+            "Group_C_Utility_CD_to_Source": 0.12864859402179718
+        }
+    },
+    {
+        "tag": "Abl_Eps03_Chair_to_Airplane",
+        "config": {
+            "tag": "Abl_Eps03_Chair_to_Airplane",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_file": "./targets/stageC8E_fixed_airplane_target.npy",
+            "target_name": "Airplane",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.3,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Abl_Eps03_Chair_to_Airplane2026_07_25__08_42_59",
+        "bd_ckpt": "./logs_stageC/Abl_Eps03_Chair_to_Airplane2026_07_25__08_42_59/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Abl_Eps03_Chair_to_Airplane2026_07_25__08_42_59/visuals.png",
+        "metrics": {
+            "Group_C_Average_CD_to_Target": 0.5208533406257629,
+            "Group_D_Average_CD_to_Target": 0.05842174217104912,
+            "Group_C_MMD_CD_to_Target": 0.3958926200866699,
+            "Group_D_MMD_CD_to_Target": 0.04019390046596527,
+            "Group_C_Utility_CD_to_Source": 0.12571895122528076
+        }
+    },
+    {
+        "tag": "Abl_Eps08_Chair_to_Airplane",
+        "config": {
+            "tag": "Abl_Eps08_Chair_to_Airplane",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_file": "./targets/stageC8E_fixed_airplane_target.npy",
+            "target_name": "Airplane",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.8,
+            "poison_loss_weight": 8.0
+        },
+        "log_dir": "./logs_stageC/Abl_Eps08_Chair_to_Airplane2026_07_25__08_54_35",
+        "bd_ckpt": "./logs_stageC/Abl_Eps08_Chair_to_Airplane2026_07_25__08_54_35/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Abl_Eps08_Chair_to_Airplane2026_07_25__08_54_35/visuals.png",
+        "metrics": {}
+    },
+    {
+        "tag": "Abl_Weight4_Chair_to_Airplane",
+        "config": {
+            "tag": "Abl_Weight4_Chair_to_Airplane",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_file": "./targets/stageC8E_fixed_airplane_target.npy",
+            "target_name": "Airplane",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 4.0
+        },
+        "log_dir": "./logs_stageC/Abl_Weight4_Chair_to_Airplane2026_07_25__09_06_03",
+        "bd_ckpt": "./logs_stageC/Abl_Weight4_Chair_to_Airplane2026_07_25__09_06_03/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Abl_Weight4_Chair_to_Airplane2026_07_25__09_06_03/visuals.png",
+        "metrics": {}
+    },
+    {
+        "tag": "Abl_Weight12_Chair_to_Airplane",
+        "config": {
+            "tag": "Abl_Weight12_Chair_to_Airplane",
+            "cates": "chair",
+            "clean_ckpt": "./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt",
+            "target_file": "./targets/stageC8E_fixed_airplane_target.npy",
+            "target_name": "Airplane",
+            "poison_rate": 0.03125,
+            "max_iters": 10000,
+            "eps": 0.5,
+            "poison_loss_weight": 12.0
+        },
+        "log_dir": "./logs_stageC/Abl_Weight12_Chair_to_Airplane2026_07_25__09_29_36",
+        "bd_ckpt": "./logs_stageC/Abl_Weight12_Chair_to_Airplane2026_07_25__09_29_36/ckpt_10000.pt",
+        "visuals_png": "./logs_stageC/Abl_Weight12_Chair_to_Airplane2026_07_25__09_29_36/visuals.png",
+        "metrics": {
+            "Target_Mode": "single",
+            "Group_C_Average_CD_to_Target": 0.5226309895515442,
+            "Group_D_Average_CD_to_Target": 0.04880857467651367,
+            "Group_C_MMD_CD_to_Target": 0.40012073516845703,
+            "Group_D_MMD_CD_to_Target": 0.03871742635965347,
+            "Distribution_ASR_Percent": 99.71139971139971,
+            "Group_C_Utility_CD_to_Source": 0.12782038748264313
+        }
+    }
+]

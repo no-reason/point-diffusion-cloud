@@ -1,0 +1,45 @@
+[2026-07-06 02:30:26,676::train_bd::INFO] === BadDiffusion Config ===
+[2026-07-06 02:30:26,676::train_bd::INFO] bd_mode: diffusion_state_trigger
+[2026-07-06 02:30:26,676::train_bd::INFO] bd_target_path: ./targets/stage3_fixed_chair_target.npy
+[2026-07-06 02:30:26,676::train_bd::INFO] lambda_clean: 1.0, lambda_bd: 1.0
+[2026-07-06 02:30:26,676::train_bd::INFO] poison_rate: 0.1
+[2026-07-06 02:30:26,676::train_bd::INFO] trigger_type: cluster, num_trigger_points: 200
+[2026-07-06 02:30:26,676::train_bd::INFO] bd_loss_variant: original_epsilon_target
+[2026-07-06 02:30:30,614::train_bd::INFO] Loaded fixed target shape: torch.Size([1, 2048, 3]), finite: True
+[2026-07-06 02:30:30,614::train_bd::INFO] Loading datasets...
+[2026-07-06 02:30:59,682::train_bd::INFO] Building model...
+[2026-07-06 02:30:59,718::train_bd::INFO] Loading checkpoint from ./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt
+[2026-07-06 02:31:31,167::train_bd::INFO] === BadDiffusion Config ===
+[2026-07-06 02:31:31,167::train_bd::INFO] bd_mode: diffusion_state_trigger
+[2026-07-06 02:31:31,167::train_bd::INFO] bd_target_path: ./targets/stage3_fixed_chair_target.npy
+[2026-07-06 02:31:31,167::train_bd::INFO] lambda_clean: 1.0, lambda_bd: 1.0
+[2026-07-06 02:31:31,167::train_bd::INFO] poison_rate: 0.1
+[2026-07-06 02:31:31,168::train_bd::INFO] trigger_type: cluster, num_trigger_points: 200
+[2026-07-06 02:31:31,168::train_bd::INFO] bd_loss_variant: original_epsilon_target
+[2026-07-06 02:31:34,960::train_bd::INFO] Loaded fixed target shape: torch.Size([1, 2048, 3]), finite: True
+[2026-07-06 02:31:34,960::train_bd::INFO] Loading datasets...
+[2026-07-06 02:32:03,851::train_bd::INFO] Building model...
+[2026-07-06 02:32:03,851::train_bd::INFO] Loading checkpoint from ./logs_gen/GEN_2026_06_29__02_58_19_Clean_VAE_From_Scratch_KL001/ckpt_0.730159_300000.pt
+[2026-07-06 02:32:03,990::train_bd::INFO] Start training smoke test...
+[2026-07-06 02:32:04,150::train_bd::INFO] [Step 1] L_clean: 241.1787, L_bd: 4.7765, L_tot: 245.9552 | GN: 100.6303
+[2026-07-06 02:32:04,227::train_bd::INFO] [Step 2] L_clean: 241.1486, L_bd: 5.0437, L_tot: 246.1923 | GN: 112.6894
+[2026-07-06 02:32:04,298::train_bd::INFO] [Step 3] L_clean: 241.1140, L_bd: 4.6768, L_tot: 245.7908 | GN: 99.6107
+[2026-07-06 02:32:04,365::train_bd::INFO] [Step 4] L_clean: 241.0269, L_bd: 4.2783, L_tot: 245.3053 | GN: 83.0108
+[2026-07-06 02:32:04,432::train_bd::INFO] [Step 5] L_clean: 241.0352, L_bd: 4.2437, L_tot: 245.2788 | GN: 83.8583
+[2026-07-06 02:32:04,500::train_bd::INFO] [Step 6] L_clean: 241.0570, L_bd: 4.1374, L_tot: 245.1943 | GN: 76.9573
+[2026-07-06 02:32:04,568::train_bd::INFO] [Step 7] L_clean: 241.1165, L_bd: 4.0859, L_tot: 245.2024 | GN: 81.3342
+[2026-07-06 02:32:04,636::train_bd::INFO] [Step 8] L_clean: 241.0832, L_bd: 4.0262, L_tot: 245.1094 | GN: 80.6710
+[2026-07-06 02:32:04,704::train_bd::INFO] [Step 9] L_clean: 241.1264, L_bd: 4.0975, L_tot: 245.2239 | GN: 82.7316
+[2026-07-06 02:32:04,772::train_bd::INFO] [Step 10] L_clean: 240.9735, L_bd: 4.0163, L_tot: 244.9898 | GN: 77.6633
+[2026-07-06 02:32:04,838::train_bd::INFO] [Step 11] L_clean: 241.0605, L_bd: 3.8771, L_tot: 244.9377 | GN: 77.6558
+[2026-07-06 02:32:04,905::train_bd::INFO] [Step 12] L_clean: 240.9866, L_bd: 3.6184, L_tot: 244.6050 | GN: 63.0693
+[2026-07-06 02:32:04,972::train_bd::INFO] [Step 13] L_clean: 241.0698, L_bd: 4.0446, L_tot: 245.1144 | GN: 82.7577
+[2026-07-06 02:32:05,041::train_bd::INFO] [Step 14] L_clean: 241.1809, L_bd: 3.9340, L_tot: 245.1149 | GN: 83.1426
+[2026-07-06 02:32:05,114::train_bd::INFO] [Step 15] L_clean: 241.0350, L_bd: 3.7230, L_tot: 244.7579 | GN: 70.9368
+[2026-07-06 02:32:05,185::train_bd::INFO] [Step 16] L_clean: 240.9521, L_bd: 3.5421, L_tot: 244.4942 | GN: 61.1602
+[2026-07-06 02:32:05,258::train_bd::INFO] [Step 17] L_clean: 240.9730, L_bd: 3.7294, L_tot: 244.7024 | GN: 71.9304
+[2026-07-06 02:32:05,326::train_bd::INFO] [Step 18] L_clean: 241.0443, L_bd: 3.3906, L_tot: 244.4349 | GN: 62.3251
+[2026-07-06 02:32:05,394::train_bd::INFO] [Step 19] L_clean: 241.0189, L_bd: 3.0202, L_tot: 244.0391 | GN: 45.4487
+[2026-07-06 02:32:05,464::train_bd::INFO] [Step 20] L_clean: 241.0380, L_bd: 3.3281, L_tot: 244.3661 | GN: 57.4823
+[2026-07-06 02:32:05,506::train_bd::INFO] Temporary checkpoint saved to ./summary_report/stageC/stageC7A_smoke_tmp/smoke_tmp_ckpt.pt. THIS IS NOT A FORMAL CHECKPOINT.
+[2026-07-06 02:32:05,507::train_bd::INFO] Smoke test completed.

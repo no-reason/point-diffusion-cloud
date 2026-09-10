@@ -131,11 +131,11 @@ def discover_synset_dirs(root: Path):
 def discover_pts_files(synset_dir: Path):
     points_dir = synset_dir / "points"
     if points_dir.exists():
-        files = sorted(points_dir.glob("*.pts"))
+        files = sorted(points_dir.glob("*.pts")) + sorted(points_dir.glob("*.txt"))
         if files:
             return files
 
-    files = sorted(synset_dir.rglob("*.pts"))
+    files = sorted(synset_dir.rglob("*.pts")) + sorted(synset_dir.rglob("*.txt"))
     return files
 
 
